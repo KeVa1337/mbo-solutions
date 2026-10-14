@@ -296,7 +296,7 @@
   /* ---------- Contact form → prefilled email (no backend needed) ---------- */
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
-  const EMAIL = 'hello@mbo.solutions';
+  const EMAIL = 'hello@mbo-solutions.com';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();

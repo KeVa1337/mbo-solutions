@@ -1,6 +1,6 @@
 # MBO Solutions — сайт-портфоліо
 
-Статичний односторінковий сайт студії **MBO Solutions** (mbo.solutions). Без збірки та залежностей: HTML + CSS + JS.
+Статичний односторінковий сайт студії **MBO Solutions** (mbo-solutions.com). Без збірки та залежностей: HTML + CSS + JS.
 
 ## Структура
 
@@ -32,11 +32,11 @@ python3 -m http.server 8000
 
 ## Що замінити перед запуском
 
-- **Контакти** (`index.html`, секція `#contact`): email `hello@mbo.solutions`, посилання на Telegram та Instagram.
+- **Контакти** (`index.html`, секція `#contact`): email `hello@mbo-solutions.com`, посилання на Telegram та Instagram.
 - **Email для форми** — константа `EMAIL` у `js/main.js`. Форма зараз відкриває поштовий клієнт із готовим листом; для прийому заявок без пошти можна підключити Formspree, Telegram-бота тощо.
 - **Ім’я засновника** — підпис у секції `#about` («Засновник MBO Solutions»).
 - **Новий кейс** — скопіюйте блок `<article class="case">` у секції `#cases`.
 
 ## Публікація
 
-Підходить будь-який статичний хостинг: GitHub Pages, Netlify, Vercel, Cloudflare Pages. Для GitHub Pages: Settings → Pages → гілка з сайтом, корінь `/`, потім додайте свій домен `mbo.solutions`.
+Підходить будь-який статичний хостинг: GitHub Pages, Netlify, Vercel, Cloudflare Pages. Для GitHub Pages: Settings → Pages → гілка з сайтом, корінь `/`, потім додайте свій домен `mbo-solutions.com`.
