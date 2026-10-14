@@ -72,7 +72,8 @@
         try { sessionStorage.setItem('mbo-intro', '1'); } catch (e) { /* storage unavailable */ }
       }, wait);
     };
-    if (document.readyState === 'complete') finish();
+    // Reveal as soon as the font is ready — no need to wait for every image
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(finish);
     else window.addEventListener('load', finish, { once: true });
     setTimeout(finish, MAX);
   }
@@ -259,7 +260,7 @@
 
   /* ---------- Hero particles ---------- */
   const canvas = document.getElementById('particles');
-  if (canvas && !reduceMotion && canvas.getContext) {
+  if (canvas && finePointer && !reduceMotion && canvas.getContext) {
     const ctx = canvas.getContext('2d');
     const hero = canvas.parentElement;
     let w = 0, h = 0, dpr = 1, particles = [], running = false, rafId = null;
