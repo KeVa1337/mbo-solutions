@@ -107,9 +107,9 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   animation: pulse 2.4s ease-in-out infinite;
 }
 .preloader.is-done { clip-path: inset(0 0 100% 0); }
-.preloader__logo { position: relative; display: flex; overflow: hidden; font-size: clamp(60px, 11vw, 104px); font-weight: 800; line-height: 1.05; letter-spacing: .01em; }
-.preloader__logo span { display: inline-block; transform: translateY(110%); animation: rise .9s var(--ease) forwards; animation-delay: calc(.1s + var(--i) * .1s); }
-.preloader__sub { position: relative; margin-top: 4px; padding-left: .6em; font-size: 12px; letter-spacing: .6em; text-transform: uppercase; color: var(--muted); opacity: 0; animation: fade .8s .5s forwards; }
+.preloader__logo { position: relative; width: clamp(180px, 34vw, 280px); height: auto; overflow: hidden; }
+.preloader__logo use { transform: translateY(110%); animation: rise .9s var(--ease) forwards; animation-delay: calc(.1s + var(--i) * .1s); }
+.preloader__sub { position: relative; margin-top: 14px; padding-left: .6em; font-size: 12px; letter-spacing: .6em; text-transform: uppercase; color: var(--muted); opacity: 0; animation: fade .8s .5s forwards; }
 .preloader__bar { position: relative; width: 160px; height: 2px; margin-top: 26px; border-radius: 2px; background: rgba(255, 255, 255, .08); overflow: hidden; }
 .preloader__bar i { display: block; height: 100%; background: var(--grad-btn); box-shadow: 0 0 12px var(--accent); transform-origin: left; transform: scaleX(0); animation: grow 1.1s .25s var(--ease) forwards; }
 
@@ -182,11 +182,11 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .btn--block { width: 100%; }
 
 /* ---------- Logo ---------- */
-.logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
-.logo__mark { position: relative; font-size: 28px; font-weight: 800; letter-spacing: .02em; }
-.logo__mark sup { position: absolute; top: 0; right: -11px; font-size: 9px; font-weight: 500; }
-.logo__sub { margin-top: 4px; font-size: 8.5px; font-weight: 500; letter-spacing: .48em; text-transform: uppercase; padding-left: .48em; color: var(--muted); }
-.logo--sm .logo__mark { font-size: 24px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.logo { display: inline-flex; line-height: 0; transition: opacity .3s, filter .4s; }
+.logo__svg { width: 118px; height: auto; aspect-ratio: 166 / 64; overflow: visible; }
+.logo:hover { filter: drop-shadow(0 0 14px rgba(168, 85, 247, .55)); }
+.logo--sm .logo__svg { width: 104px; }
 
 /* ---------- Header ---------- */
 .header {
@@ -419,7 +419,9 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .section__lead { margin-top: 18px; color: var(--muted); font-size: 17px; }
 
 /* Services */
-.services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.services { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+.service { grid-column: span 2; }
+.service:nth-child(n+4) { grid-column: span 3; }
 .service { padding: 32px; }
 .service:hover { border-color: rgba(167, 139, 250, .2); transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(139, 92, 246, .55); }
 .service__num { position: absolute; top: 26px; right: 30px; font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, .14); transition: color .3s; }
@@ -647,6 +649,8 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .scroll-hint { display: none; }
 
   .services { grid-template-columns: repeat(2, 1fr); }
+  .service, .service:nth-child(n+4) { grid-column: auto; }
+  .service:last-child { grid-column: 1 / -1; }
   .why, .about, .contact__inner { grid-template-columns: 1fr; gap: 48px; }
   .why__media img { aspect-ratio: 16 / 10; }
   .about__photo { max-width: 420px; }
@@ -676,6 +680,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .marquee__band--front { transform: rotate(-5deg); }
   .marquee__band--back { transform: translateY(-50%) rotate(5deg); }
   .services, .steps { grid-template-columns: 1fr; }
+  .service:last-child { grid-column: auto; }
   .steps-wrap { padding-left: 22px; }
   .service { padding: 26px; }
   .case__body { padding: 28px 22px; }
