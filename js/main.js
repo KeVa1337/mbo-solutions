@@ -182,21 +182,48 @@
       card.style.setProperty('--my', `${e.clientY - r.top}px`);
     }, { passive: true });
 
-    // Cursor glow with easing
+    // Cursor glow + custom cursor, one eased animation loop
     const glow = document.getElementById('cursor-glow');
-    let gx = innerWidth / 2, gy = innerHeight / 2, tx = gx, ty = gy, glowRAF = null;
-    const glowLoop = () => {
-      gx += (tx - gx) * 0.12;
-      gy += (ty - gy) * 0.12;
+    const cursor = document.getElementById('cursor');
+    const cDot = cursor.querySelector('.cursor__dot');
+    const cFollow = cursor.querySelector('.cursor__follow');
+    const cLabel = cursor.querySelector('.cursor__label');
+    root.classList.add('has-cursor');
+
+    let tx = innerWidth / 2, ty = innerHeight / 2;
+    let gx = tx, gy = ty, rx = tx, ry = ty, loopRAF = null;
+    const loop = () => {
+      gx += (tx - gx) * 0.12; gy += (ty - gy) * 0.12;
+      rx += (tx - rx) * 0.22; ry += (ty - ry) * 0.22;
       glow.style.transform = `translate3d(${gx}px, ${gy}px, 0)`;
-      glowRAF = Math.abs(tx - gx) + Math.abs(ty - gy) > 0.5 ? requestAnimationFrame(glowLoop) : null;
+      cFollow.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+      loopRAF = Math.abs(tx - gx) + Math.abs(ty - gy) > 0.3 ? requestAnimationFrame(loop) : null;
     };
     window.addEventListener('pointermove', (e) => {
       tx = e.clientX; ty = e.clientY;
+      cDot.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
       glow.classList.add('is-active');
-      if (!glowRAF) glowRAF = requestAnimationFrame(glowLoop);
+      cursor.classList.add('is-visible');
+      if (!loopRAF) loopRAF = requestAnimationFrame(loop);
     }, { passive: true });
-    document.addEventListener('pointerleave', () => glow.classList.remove('is-active'));
+    document.addEventListener('pointerleave', () => {
+      glow.classList.remove('is-active');
+      cursor.classList.remove('is-visible');
+    });
+    window.addEventListener('pointerdown', () => cursor.classList.add('is-down'));
+    window.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
+
+    // Cursor states: label over [data-cursor], grow over interactive, caret over fields
+    document.addEventListener('pointerover', (e) => {
+      const t = e.target;
+      const labelled = t.closest('[data-cursor]');
+      const field = t.closest('input, textarea, select');
+      const interactive = t.closest('a, button, summary, label, [data-magnetic]');
+      cursor.classList.toggle('is-text', !!field);
+      cursor.classList.toggle('is-label', !!labelled && !interactive && !field);
+      cursor.classList.toggle('is-hover', !!interactive && !field);
+      if (labelled) cLabel.textContent = labelled.dataset.cursor;
+    });
 
     // 3D tilt
     document.querySelectorAll('[data-tilt]').forEach((el) => {
@@ -302,48 +329,269 @@
     document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
   }
 
-  /* ---------- Contact form → prefilled email (no backend needed) ---------- */
+  /* ---------- Leads → prefilled email (no backend needed) ---------- */
+  const EMAIL = 'hello@mbo-solutions.com';
+  const sendLead = (subject, lines) => {
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+  };
+
+  // Marks empty required fields; returns the first invalid one (or null)
+  const validate = (formEl) => {
+    let first = null;
+    formEl.querySelectorAll('[required]').forEach((f) => {
+      f.classList.remove('is-invalid');
+      if (!f.value.trim()) {
+        void f.offsetWidth; // restart shake animation
+        f.classList.add('is-invalid');
+        first = first || f;
+      }
+    });
+    return first;
+  };
+  const clearInvalid = (e) => { if (e.target.value && e.target.value.trim()) e.target.classList.remove('is-invalid'); };
+
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
-  const EMAIL = 'hello@mbo-solutions.com';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const required = [...form.querySelectorAll('[required]')];
-    let valid = true;
-    required.forEach((f) => {
-      const empty = !f.value.trim();
-      f.classList.remove('is-invalid');
-      if (empty) {
-        void f.offsetWidth; // restart shake animation
-        f.classList.add('is-invalid');
-        valid = false;
-      }
-    });
-    if (!valid) {
+    const invalid = validate(form);
+    if (invalid) {
       status.textContent = 'Будь ласка, заповніть ім’я та контакт.';
       status.classList.add('is-error');
-      form.querySelector('.is-invalid').focus();
+      invalid.focus();
       return;
     }
-
     const data = new FormData(form);
-    const subject = `Заявка з сайту: ${data.get('type')}`;
-    const body = [
+    sendLead(`Заявка з сайту: ${data.get('type')}`, [
       `Ім’я: ${data.get('name')}`,
       `Контакт: ${data.get('contact')}`,
       `Тип проєкту: ${data.get('type')}`,
       '',
       data.get('message') || '',
-    ].join('\n');
-
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    ]);
     status.classList.remove('is-error');
     status.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
   });
+  form.addEventListener('input', clearInvalid);
 
-  form.addEventListener('input', (e) => {
-    if (e.target.value.trim()) e.target.classList.remove('is-invalid');
+  /* ---------- Quiz ---------- */
+  const quiz = document.getElementById('quiz-card');
+  if (quiz) {
+    const steps = [...quiz.querySelectorAll('.quiz__step')];
+    const total = steps.length - 1; // last step is the result
+    const counter = document.getElementById('quiz-counter');
+    const progress = document.getElementById('quiz-progress');
+    const back = document.getElementById('quiz-back');
+    const restart = document.getElementById('quiz-restart');
+    const quizForm = document.getElementById('quiz-form');
+    const quizStatus = document.getElementById('quiz-status');
+    const answers = {};
+    const labels = {};
+    let current = 0;
+
+    const PRODUCTS = {
+      landing: { title: 'Лендінг', text: 'Односторінковий сайт з чіткою структурою, який веде відвідувача до заявки. Оптимальний старт, щоб швидко отримувати клієнтів з реклами.' },
+      corporate: { title: 'Корпоративний сайт', text: 'Багатосторінковий сайт, що розповідає про компанію й послуги та формує довіру — особливо важливо для B2B і виробництва.' },
+      shop: { title: 'Інтернет-магазин', text: 'Каталог, кошик і зручне оформлення замовлення — щоб покупцю було легко дійти до оплати.' },
+    };
+    const BRAND = {
+      partial: 'Доопрацюємо фірмовий стиль навколо вашого логотипа, щоб сайт виглядав цілісно.',
+      none: 'Створимо логотип і фірмовий стиль — сайт і бренд будуть в одному візуальному ключі.',
+    };
+    const TIMING = {
+      asap: 'Почнемо з короткого брифу одразу після вашої заявки.',
+      month: 'Сплануємо роботу так, щоб вкластися у ваші терміни.',
+      later: 'Підготуємо пропозицію, щоб ви могли спокійно все обдумати.',
+    };
+
+    const recommend = () => {
+      let product = answers.need;
+      if (product === 'unknown') {
+        product = answers.niche === 'goods' ? 'shop' : answers.niche === 'b2b' ? 'corporate' : 'landing';
+      }
+      const needsBrand = answers.brand && answers.brand !== 'full';
+      const p = PRODUCTS[product];
+      document.getElementById('quiz-result-title').textContent = p.title + (needsBrand ? ' + брендинг' : '');
+      document.getElementById('quiz-result-text').textContent =
+        [p.text, needsBrand ? BRAND[answers.brand] : '', TIMING[answers.timing]].filter(Boolean).join(' ');
+      const tags = [p.title, needsBrand && 'Брендинг', 'Адаптив', 'Підтримка'].filter(Boolean);
+      document.getElementById('quiz-result-tags').innerHTML = tags.map((t) => `<li>${t}</li>`).join('');
+      return p.title + (needsBrand ? ' + брендинг' : '');
+    };
+
+    const show = (index, backwards = false) => {
+      steps[current].hidden = true;
+      steps[current].classList.remove('is-active');
+      current = index;
+      const step = steps[current];
+      step.hidden = false;
+      step.classList.toggle('is-back', backwards);
+      step.classList.add('is-active');
+      const isResult = current === total;
+      counter.textContent = isResult ? 'Готово ✦' : `Крок ${current + 1} / ${total}`;
+      progress.style.transform = `scaleX(${isResult ? 1 : (current + 1) / total})`;
+      back.disabled = current === 0;
+      restart.hidden = !isResult;
+      if (isResult) recommend();
+      const focusTarget = step.querySelector('[aria-pressed="true"], .quiz__opt, input');
+      if (focusTarget && document.activeElement && quiz.contains(document.activeElement)) focusTarget.focus({ preventScroll: true });
+    };
+
+    quiz.addEventListener('click', (e) => {
+      const opt = e.target.closest('.quiz__opt');
+      if (!opt) return;
+      const { key, value } = opt.dataset;
+      answers[key] = value;
+      labels[key] = opt.textContent.trim();
+      opt.parentElement.querySelectorAll('.quiz__opt').forEach((o) => o.setAttribute('aria-pressed', String(o === opt)));
+      setTimeout(() => show(current + 1), reduceMotion ? 0 : 280);
+    });
+    back.addEventListener('click', () => { if (current > 0) show(current - 1, true); });
+    restart.addEventListener('click', () => {
+      quiz.querySelectorAll('.quiz__opt').forEach((o) => o.setAttribute('aria-pressed', 'false'));
+      quizStatus.textContent = '';
+      show(0, true);
+    });
+
+    quizForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const invalid = validate(quizForm);
+      if (invalid) {
+        quizStatus.textContent = 'Будь ласка, вкажіть ім’я та контакт.';
+        quizStatus.classList.add('is-error');
+        invalid.focus();
+        return;
+      }
+      const data = new FormData(quizForm);
+      const result = recommend();
+      sendLead(`Заявка з квізу: ${result}`, [
+        `Ім’я: ${data.get('name')}`,
+        `Контакт: ${data.get('contact')}`,
+        '',
+        `Бізнес: ${labels.niche}`,
+        `Потрібно: ${labels.need}`,
+        `Фірмовий стиль: ${labels.brand}`,
+        `Запуск: ${labels.timing}`,
+        '',
+        `Рекомендація: ${result}`,
+      ]);
+      quizStatus.classList.remove('is-error');
+      quizStatus.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
+    });
+    quizForm.addEventListener('input', clearInvalid);
+  }
+
+  /* ---------- Count-up numbers & speed ring ---------- */
+  const proof = document.getElementById('proof-card');
+  if (proof) {
+    const nums = [...proof.querySelectorAll('[data-count]')];
+    const run = () => {
+      proof.classList.add('is-counted');
+      if (reduceMotion) return;
+      const start = performance.now();
+      const DURATION = 1800;
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / DURATION);
+        const eased = 1 - Math.pow(1 - t, 3);
+        nums.forEach((n) => { n.textContent = Math.round(+n.dataset.count * eased); });
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      nums.forEach((n) => { n.textContent = '0'; });
+      requestAnimationFrame(tick);
+    };
+    if (hasIO) {
+      const cio = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { run(); cio.disconnect(); }
+      }, { threshold: 0.4 });
+      cio.observe(proof);
+    } else {
+      run();
+    }
+  }
+
+  /* ---------- Easter egg: type "mbo" (any keyboard layout) or tap the logo 5 times ---------- */
+  let typed = '';
+  let eggBusy = false;
+  const egg = () => {
+    if (eggBusy) return;
+    eggBusy = true;
+    root.classList.add('egg');
+
+    const toast = document.createElement('div');
+    toast.className = 'egg-toast';
+    toast.setAttribute('role', 'status');
+    toast.textContent = '✦ Ви знайшли пасхалку MBO! Нам подобаються уважні люди.';
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    const finish = () => {
+      toast.classList.remove('is-visible');
+      root.classList.remove('egg');
+      setTimeout(() => { toast.remove(); eggBusy = false; }, 500);
+    };
+
+    if (reduceMotion) { setTimeout(finish, 2600); return; }
+
+    const c = document.createElement('canvas');
+    c.className = 'egg-canvas';
+    document.body.appendChild(c);
+    const ctx = c.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const W = innerWidth, H = innerHeight;
+    c.width = W * dpr; c.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const COLORS = ['#c4b5fd', '#a855f7', '#8b5cf6', '#ffffff', '#e9d5ff'];
+    const ox = W / 2, oy = H * 0.42;
+    const parts = Array.from({ length: finePointer ? 180 : 90 }, () => {
+      const a = Math.random() * Math.PI * 2;
+      const v = Math.random() * 9 + 3;
+      return {
+        x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3,
+        size: Math.random() * 5 + 2, color: COLORS[(Math.random() * COLORS.length) | 0],
+        star: Math.random() < 0.25, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3,
+      };
+    });
+    const t0 = performance.now();
+    const LIFE = 2400;
+    const frame = (now) => {
+      const t = (now - t0) / LIFE;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = Math.max(0, 1 - t * t);
+      for (const p of parts) {
+        p.vx *= 0.985; p.vy = p.vy * 0.985 + 0.18;
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        ctx.fillStyle = p.color;
+        if (p.star) {
+          ctx.save();
+          ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.font = `${p.size * 4}px Manrope, sans-serif`;
+          ctx.fillText('✦', -p.size * 1.4, p.size * 1.4);
+          ctx.restore();
+        } else {
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      if (t < 1) requestAnimationFrame(frame);
+      else { c.remove(); finish(); }
+    };
+    requestAnimationFrame(frame);
+  };
+
+  const KEYS = { KeyM: 'm', KeyB: 'b', KeyO: 'o' };
+  document.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]')) return;
+    typed = (typed + (KEYS[e.code] || '-')).slice(-3);
+    if (typed === 'mbo') { typed = ''; egg(); }
+  });
+
+  let taps = [];
+  document.querySelectorAll('.header .logo').forEach((logo) => {
+    logo.addEventListener('click', () => {
+      const now = Date.now();
+      taps = taps.filter((t) => now - t < 2000).concat(now);
+      if (taps.length >= 5) { taps = []; egg(); }
+    });
   });
 
   document.getElementById('year').textContent = new Date().getFullYear();

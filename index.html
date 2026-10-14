@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
   <link rel="preload" as="image" href="assets/img/hero-mockup-sm.webp" media="(max-width: 600px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/img/hero-mockup.webp" imagesrcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" imagesizes="(max-width: 960px) 92vw, 540px" media="(min-width: 601px)" fetchpriority="high">
 
@@ -83,6 +83,10 @@
 
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
   <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__follow"><div class="cursor__ring"><span class="cursor__label"></span></div></div>
+  </div>
 
   <a class="skip-link" href="#main">Перейти до змісту</a>
 
@@ -125,12 +129,12 @@
           <p class="hero__lead intro" style="--d:.7s">Розробка сучасних сайтів для бізнесу з фокусом на результат. Продуманий дизайн, зручна структура, висока конверсія.</p>
           <div class="hero__actions intro" style="--d:.85s">
             <a href="#contact" class="btn btn--primary" data-magnetic>Запустити проєкт <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <a href="#cases" class="btn btn--ghost" data-magnetic>Дивитись кейси</a>
+            <a href="#quiz" class="btn btn--ghost" data-magnetic>Підібрати рішення за 1 хв</a>
           </div>
         </div>
 
         <div class="hero__visual intro intro--zoom" style="--d:.35s">
-          <div class="tilt" data-tilt>
+          <div class="tilt" data-tilt data-cursor="3D">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/hero-mockup-sm.webp">
               <img src="assets/img/hero-mockup.webp" srcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" sizes="(max-width: 960px) 92vw, 540px" width="1254" height="1254" decoding="async" alt="Сайт MBO Solutions на ноутбуці та смартфоні" fetchpriority="high">
@@ -236,7 +240,7 @@
         </div>
 
         <article class="case spot reveal">
-          <div class="case__media reveal-img">
+          <div class="case__media reveal-img" data-cursor="LUMEX">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/case-lumex-sm.webp">
               <img src="assets/img/case-lumex.webp" srcset="assets/img/case-lumex-sm.webp 720w, assets/img/case-lumex.webp 1280w" sizes="(max-width: 1080px) 92vw, 680px" width="1280" height="853" loading="lazy" decoding="async" alt="Сайт LUMEX на ноутбуці та смартфоні">
@@ -306,6 +310,32 @@
       </div>
     </section>
 
+    <!-- ===== Proof (speed) ===== -->
+    <section class="section proof" id="proof">
+      <div class="container">
+        <div class="proof__card card spot reveal" id="proof-card">
+          <div class="proof__score" aria-hidden="true">
+            <svg class="proof__ring" viewBox="0 0 120 120">
+              <defs><linearGradient id="proof-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+              <circle class="proof__track" cx="60" cy="60" r="52"/>
+              <circle class="proof__bar" cx="60" cy="60" r="52"/>
+            </svg>
+            <div class="proof__num"><b data-count="100">100</b><small>/100</small></div>
+          </div>
+          <div class="proof__content">
+            <p class="eyebrow">Цей сайт — наш доказ</p>
+            <h2 class="section__title" data-split>Швидкість, яку <span class="grad">відчувають клієнти</span></h2>
+            <p class="proof__lead">Цей сайт отримав <strong>100 зі 100</strong> в перевірці швидкості на комп’ютері. Ваш сайт ми робимо так само: легким, швидким і без зайвого.</p>
+            <ul class="proof__stats">
+              <li><p class="proof__value"><b data-count="29">29</b> КБ</p><p>увесь код сайту після стиснення</p></li>
+              <li><p class="proof__value"><b data-count="69">69</b> КБ</p><p>головне зображення на телефоні</p></li>
+              <li><p class="proof__value"><b data-count="0">0</b></p><p>сторонніх JS-бібліотек</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== Process ===== -->
     <section class="section section--alt" id="process">
       <div class="container">
@@ -327,10 +357,89 @@
       </div>
     </section>
 
+    <!-- ===== Quiz ===== -->
+    <section class="section quiz" id="quiz">
+      <div class="quiz__glow" aria-hidden="true"></div>
+      <div class="container container--quiz">
+        <div class="section__head section__head--center">
+          <p class="eyebrow reveal">Підбір рішення</p>
+          <h2 class="section__title" data-split>Підберемо рішення <span class="grad nowrap">за 1 хвилину</span></h2>
+          <p class="section__lead reveal" style="--d:.2s">Дайте відповідь на 4 питання — і ми підготуємо пропозицію саме під ваш бізнес.</p>
+        </div>
+
+        <div class="quiz__card card reveal reveal--zoom" id="quiz-card">
+          <div class="quiz__top">
+            <span class="quiz__counter" id="quiz-counter">Крок 1 / 4</span>
+            <div class="quiz__progress" aria-hidden="true"><i id="quiz-progress"></i></div>
+          </div>
+
+          <div class="quiz__steps" id="quiz-steps">
+          <div class="quiz__step is-active" data-step="1" role="group" aria-labelledby="quiz-q1">
+            <h3 class="quiz__q" id="quiz-q1">Чим займається ваш бізнес?</h3>
+            <div class="quiz__options">
+              <button type="button" class="quiz__opt" data-key="niche" data-value="services" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><path d="M9 8V5h6v3M4 13h16"/></svg><span>Послуги</span></button>
+              <button type="button" class="quiz__opt" data-key="niche" data-value="goods" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.2 12.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 7Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><span>Товари</span></button>
+              <button type="button" class="quiz__opt" data-key="niche" data-value="b2b" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V10l6 4v-4l6 4V5h6v16H3Z"/><path d="M7 17h2M12 17h2M17 17h1"/></svg><span>Виробництво / B2B</span></button>
+              <button type="button" class="quiz__opt" data-key="niche" data-value="personal" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Особистий бренд</span></button>
+              <button type="button" class="quiz__opt" data-key="niche" data-value="other" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg><span>Інше</span></button>
+            </div>
+          </div>
+          <div class="quiz__step" data-step="2" role="group" aria-labelledby="quiz-q2" hidden>
+            <h3 class="quiz__q" id="quiz-q2">Що вам потрібно?</h3>
+            <div class="quiz__options">
+              <button type="button" class="quiz__opt" data-key="need" data-value="landing" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Лендінг</span></button>
+              <button type="button" class="quiz__opt" data-key="need" data-value="corporate" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg><span>Корпоративний сайт</span></button>
+              <button type="button" class="quiz__opt" data-key="need" data-value="shop" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6"/></svg><span>Інтернет-магазин</span></button>
+              <button type="button" class="quiz__opt" data-key="need" data-value="unknown" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></svg><span>Ще не знаю — порадьте</span></button>
+            </div>
+          </div>
+          <div class="quiz__step" data-step="3" role="group" aria-labelledby="quiz-q3" hidden>
+            <h3 class="quiz__q" id="quiz-q3">Чи є у вас фірмовий стиль?</h3>
+            <div class="quiz__options">
+              <button type="button" class="quiz__opt" data-key="brand" data-value="full" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span>Так, є логотип і стиль</span></button>
+              <button type="button" class="quiz__opt" data-key="brand" data-value="partial" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg><span>Є лише логотип</span></button>
+              <button type="button" class="quiz__opt" data-key="brand" data-value="none" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg><span>Немає — потрібен з нуля</span></button>
+            </div>
+          </div>
+          <div class="quiz__step" data-step="4" role="group" aria-labelledby="quiz-q4" hidden>
+            <h3 class="quiz__q" id="quiz-q4">Коли плануєте запуск?</h3>
+            <div class="quiz__options">
+              <button type="button" class="quiz__opt" data-key="timing" data-value="asap" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg><span>Якомога швидше</span></button>
+              <button type="button" class="quiz__opt" data-key="timing" data-value="month" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Протягом місяця</span></button>
+              <button type="button" class="quiz__opt" data-key="timing" data-value="later" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg><span>Поки що планую</span></button>
+            </div>
+          </div>
+          <div class="quiz__step quiz__step--result" data-step="5" hidden>
+            <div class="quiz__result">
+              <p class="eyebrow">Наша рекомендація</p>
+              <h3 class="quiz__result-title" id="quiz-result-title"></h3>
+              <p class="quiz__result-text" id="quiz-result-text"></p>
+              <ul class="tags" id="quiz-result-tags"></ul>
+            </div>
+            <form class="quiz__form" id="quiz-form" novalidate>
+              <p class="quiz__form-title">Куди надіслати пропозицію?</p>
+              <div class="quiz__fields">
+                <input name="name" type="text" autocomplete="name" required placeholder="Ваше ім’я" aria-label="Ваше ім’я">
+                <input name="contact" type="text" autocomplete="tel" required placeholder="Телефон або @telegram" aria-label="Телефон або Telegram">
+              </div>
+              <button type="submit" class="btn btn--primary btn--block">Отримати пропозицію <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+              <p class="form__status" id="quiz-status" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+          </div>
+
+          <div class="quiz__nav">
+            <button type="button" class="quiz__back" id="quiz-back" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Назад</button>
+            <button type="button" class="quiz__restart" id="quiz-restart" hidden>Пройти ще раз</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== About ===== -->
     <section class="section" id="about">
       <div class="container about">
-        <div class="about__photo">
+        <div class="about__photo" data-cursor="Привіт!">
           <div class="reveal-img">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/founder-sm.webp">
@@ -446,11 +555,16 @@
     </div>
   </footer>
 
+  <a href="https://t.me/mbo_solutions" class="tg-float" id="tg-float" target="_blank" rel="noopener" aria-label="Написати нам у Telegram">
+    <span class="tg-float__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.6 18.8 19.2c-.2 1-.8 1.3-1.7.8l-4.6-3.4-2.2 2.1c-.2.2-.5.5-1 .5l.3-4.7 8.6-7.8c.4-.3-.1-.5-.6-.2L6.9 13.2l-4.5-1.4c-1-.3-1-1 .2-1.5l17.7-6.8c.8-.3 1.6.2 1.6 1.1Z"/></svg></span>
+    <span class="tg-float__label">Напишіть нам</span>
+  </a>
+
   <a href="#top" class="to-top" id="to-top" aria-label="Повернутися нагору">
     <svg class="to-top__ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22"/><circle class="to-top__fill" id="to-top-fill" cx="24" cy="24" r="22"/></svg>
     <svg class="to-top__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </a>
 
-  <script src="js/main.js?v=5" defer></script>
+  <script src="js/main.js?v=6" defer></script>
 </body>
 </html>
