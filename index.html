@@ -31,9 +31,10 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preload" as="image" href="assets/img/hero-mockup.webp">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="preload" as="image" href="assets/img/hero-mockup-sm.webp" media="(max-width: 600px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/img/hero-mockup.webp" imagesrcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" imagesizes="(max-width: 960px) 92vw, 540px" media="(min-width: 601px)" fetchpriority="high">
 
   <script type="application/ld+json">
   {
@@ -130,7 +131,10 @@
 
         <div class="hero__visual intro intro--zoom" style="--d:.35s">
           <div class="tilt" data-tilt>
-            <img src="assets/img/hero-mockup.webp" width="1254" height="1254" alt="Сайт MBO Solutions на ноутбуці та смартфоні" fetchpriority="high">
+            <picture>
+              <source media="(max-width: 600px)" srcset="assets/img/hero-mockup-sm.webp">
+              <img src="assets/img/hero-mockup.webp" srcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" sizes="(max-width: 960px) 92vw, 540px" width="1254" height="1254" decoding="async" alt="Сайт MBO Solutions на ноутбуці та смартфоні" fetchpriority="high">
+            </picture>
             <span class="tilt__glare" aria-hidden="true"></span>
           </div>
           <div class="chip chip--1" aria-hidden="true"><span class="chip__dot"></span>Дизайн без шаблонів</div>
@@ -233,7 +237,10 @@
 
         <article class="case spot reveal">
           <div class="case__media reveal-img">
-            <img src="assets/img/case-lumex.webp" width="1280" height="853" loading="lazy" alt="Сайт LUMEX на ноутбуці та смартфоні">
+            <picture>
+              <source media="(max-width: 600px)" srcset="assets/img/case-lumex-sm.webp">
+              <img src="assets/img/case-lumex.webp" srcset="assets/img/case-lumex-sm.webp 720w, assets/img/case-lumex.webp 1280w" sizes="(max-width: 1080px) 92vw, 680px" width="1280" height="853" loading="lazy" decoding="async" alt="Сайт LUMEX на ноутбуці та смартфоні">
+            </picture>
           </div>
           <div class="case__body">
             <p class="case__label">LUMEX</p>
@@ -265,7 +272,10 @@
     <section class="section" id="why">
       <div class="container why">
         <div class="why__media reveal-img">
-          <img src="assets/img/brand-stand.webp" width="1280" height="853" loading="lazy" alt="Стенд MBO Solutions з переліком переваг">
+          <picture>
+            <source media="(max-width: 600px)" srcset="assets/img/brand-stand-sm.webp">
+            <img src="assets/img/brand-stand.webp" srcset="assets/img/brand-stand-sm.webp 720w, assets/img/brand-stand.webp 1280w" sizes="(max-width: 960px) 92vw, 570px" width="1280" height="853" loading="lazy" decoding="async" alt="Стенд MBO Solutions з переліком переваг">
+          </picture>
         </div>
         <div class="why__content">
           <p class="eyebrow reveal">Чому MBO</p>
@@ -322,7 +332,10 @@
       <div class="container about">
         <div class="about__photo">
           <div class="reveal-img">
-            <img src="assets/img/founder.webp" width="900" height="1200" loading="lazy" alt="Засновник MBO Solutions">
+            <picture>
+              <source media="(max-width: 600px)" srcset="assets/img/founder-sm.webp">
+              <img src="assets/img/founder.webp" srcset="assets/img/founder-sm.webp 560w, assets/img/founder.webp 900w" sizes="(max-width: 960px) 420px, 410px" width="900" height="1200" loading="lazy" decoding="async" alt="Засновник MBO Solutions">
+            </picture>
           </div>
           <div class="about__badge" aria-hidden="true">
             <svg viewBox="0 0 120 120" class="about__badge-text">
@@ -438,6 +451,6 @@
     <svg class="to-top__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </a>
 
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=5" defer></script>
 </body>
 </html>

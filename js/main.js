@@ -58,7 +58,7 @@
     if (preloader) preloader.remove();
     requestAnimationFrame(startIntro);
   } else {
-    const MIN = 1500, MAX = 3500;
+    const MIN = 900, MAX = 2500;
     const started = performance.now();
     let done = false;
     const finish = () => {
@@ -238,12 +238,24 @@
     let w = 0, h = 0, dpr = 1, particles = [], running = false, rafId = null;
     let mx = 0, my = 0;
 
+    // Pre-rendered glowing dot: much cheaper than shadowBlur on every particle every frame
+    const sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 32;
+    const sctx = sprite.getContext('2d');
+    const g = sctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    g.addColorStop(0, 'rgba(237, 233, 254, 1)');
+    g.addColorStop(0.18, 'rgba(196, 181, 253, .95)');
+    g.addColorStop(0.45, 'rgba(168, 85, 247, .35)');
+    g.addColorStop(1, 'rgba(168, 85, 247, 0)');
+    sctx.fillStyle = g;
+    sctx.fillRect(0, 0, 32, 32);
+
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       w = hero.clientWidth; h = hero.clientHeight;
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round(Math.min(80, w / 16));
+      const count = Math.round(Math.min(finePointer ? 70 : 28, w / 16));
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -264,12 +276,9 @@
         if (p.x < -10) p.x = w + 10; else if (p.x > w + 10) p.x = -10;
         const alpha = p.a * (0.6 + 0.4 * Math.sin(p.t));
         const ox = mx * 18 * p.depth, oy = my * 18 * p.depth;
-        ctx.beginPath();
-        ctx.arc(p.x + ox, p.y + oy, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(196, 181, 253, ${alpha})`;
-        ctx.shadowColor = 'rgba(168, 85, 247, .9)';
-        ctx.shadowBlur = 8;
-        ctx.fill();
+        const size = p.r * 8;
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(sprite, p.x + ox - size / 2, p.y + oy - size / 2, size, size);
       }
       rafId = requestAnimationFrame(draw);
     };
