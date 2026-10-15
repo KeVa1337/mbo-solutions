@@ -685,6 +685,12 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .gift h3 { font-size: 24px; }
 .gift__text > p:last-child { margin-top: 6px; color: var(--muted); }
 
+/* ---------- USD prices ---------- */
+.usd { font-size: .82em; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.plan__price .usd { font-size: 16px; }
+.rate-note { margin-top: 16px; font-size: 13px; color: var(--muted); text-align: center; }
+.rate-note:empty { display: none; }
+
 /* ---------- Honest terms ---------- */
 .terms { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .terms li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); }

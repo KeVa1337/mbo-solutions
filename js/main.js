@@ -445,9 +445,9 @@
     let current = 0;
 
     const PRODUCTS = {
-      landing: { title: 'Лендінг', price: 'від 3 000 грн', term: '2–3 дні', text: 'Односторінковий сайт з чіткою структурою, який веде відвідувача до заявки. Оптимальний старт, щоб швидко отримувати клієнтів з реклами.' },
-      corporate: { title: 'Корпоративний сайт', price: 'від 8 000 грн', term: '5–7 днів', text: 'Багатосторінковий сайт, що розповідає про компанію й послуги та формує довіру — особливо важливо для B2B і виробництва.' },
-      shop: { title: 'Інтернет-магазин', price: 'від 15 000 грн', term: '10–14 днів', text: 'Каталог, кошик і зручне оформлення замовлення — щоб покупцю було легко дійти до оплати.' },
+      landing: { title: 'Лендінг', price: 'від 3 000 грн', uah: 3000, term: '2–3 дні', text: 'Односторінковий сайт з чіткою структурою, який веде відвідувача до заявки. Оптимальний старт, щоб швидко отримувати клієнтів з реклами.' },
+      corporate: { title: 'Корпоративний сайт', price: 'від 8 000 грн', uah: 8000, term: '5–7 днів', text: 'Багатосторінковий сайт, що розповідає про компанію й послуги та формує довіру — особливо важливо для B2B і виробництва.' },
+      shop: { title: 'Інтернет-магазин', price: 'від 15 000 грн', uah: 15000, term: '10–14 днів', text: 'Каталог, кошик і зручне оформлення замовлення — щоб покупцю було легко дійти до оплати.' },
     };
     const BRAND = {
       partial: 'Доопрацюємо фірмовий стиль навколо вашого логотипа, щоб сайт виглядав цілісно.',
@@ -469,7 +469,7 @@
       document.getElementById('quiz-result-title').textContent = p.title + (needsBrand ? ' + брендинг' : '');
       document.getElementById('quiz-result-text').textContent =
         [p.text, needsBrand ? BRAND[answers.brand] : '', TIMING[answers.timing]].filter(Boolean).join(' ');
-      const tags = [p.price, `⚡ ${p.term}`, needsBrand && 'Брендинг', 'Безкоштовні правки'].filter(Boolean);
+      const tags = [`${p.price} / ${usd(p.uah)}`, `⚡ ${p.term}`, needsBrand && 'Брендинг', 'Безкоштовні правки'].filter(Boolean);
       document.getElementById('quiz-result-tags').innerHTML = tags.map((t) => `<li>${t}</li>`).join('');
       return p.title + (needsBrand ? ' + брендинг' : '');
     };
@@ -653,6 +653,62 @@
   const year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
 
+  /* ---------- USD prices next to UAH: <span class="usd" data-uah="3000"></span> → " / $67" ---------- */
+  const USD_FALLBACK = 45.06; // NBU rate on 06.10.2026, used only if no fresh rate can be loaded
+  const RATE_TTL = 6 * 3600 * 1000;
+  let usdRate = USD_FALLBACK;
+  let rateDate = '06.10.2026';
+  let rateSource = 'НБУ';
+  const rateListeners = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem('mbo-usd') || 'null');
+    if (saved && saved.rate > 0) { usdRate = saved.rate; rateDate = saved.date || ''; rateSource = saved.source || 'НБУ'; }
+  } catch (e) { /* storage unavailable */ }
+
+  const usd = (uah) => `$${Math.max(1, Math.round(uah / usdRate)).toLocaleString('en-US')}`;
+  const renderUsd = () => {
+    document.querySelectorAll('[data-uah]').forEach((el) => {
+      el.textContent = `${el.dataset.prefix || ' / '}${usd(+el.dataset.uah)}`;
+    });
+    document.querySelectorAll('[data-rate-note]').forEach((el) => {
+      el.textContent = `Ціни в $ — довідково, за курсом ${rateSource}${rateDate ? ` на ${rateDate}` : ''}: ${usdRate.toFixed(2).replace('.', ',')} грн за $1.`;
+    });
+    rateListeners.forEach((fn) => fn());
+  };
+  renderUsd();
+
+  const loadRate = async () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('mbo-usd') || 'null');
+      if (saved && Date.now() - saved.ts < RATE_TTL) return;
+    } catch (e) { /* ignore */ }
+    let rate = 0, date = '', source = 'НБУ';
+    try {
+      // Same-origin PHP proxy to the NBU (see rate.php)
+      const r = await fetch('/rate.php', { cache: 'no-cache' });
+      if (r.ok) { const j = await r.json(); rate = +j.rate; date = j.date || ''; }
+    } catch (e) { /* fall through */ }
+    if (!(rate > 0)) {
+      try {
+        // Fallback: Monobank public rates (USD=840, UAH=980)
+        const r = await fetch('https://api.monobank.ua/bank/currency');
+        if (r.ok) {
+          const j = await r.json();
+          const pair = j.find((x) => x.currencyCodeA === 840 && x.currencyCodeB === 980);
+          if (pair) { rate = +(pair.rateSell || pair.rateCross || 0); source = 'Монобанку'; date = ''; }
+        }
+      } catch (e) { /* keep fallback */ }
+    }
+    if (rate > 0) {
+      usdRate = rate; rateDate = date; rateSource = source;
+      try { localStorage.setItem('mbo-usd', JSON.stringify({ rate, date, source, ts: Date.now() })); } catch (e) { /* ignore */ }
+      renderUsd();
+    }
+  };
+  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(loadRate, { timeout: 2500 }) : setTimeout(loadRate, 1200));
+  if (document.readyState === 'complete') whenIdle();
+  else window.addEventListener('load', whenIdle, { once: true });
+
   // Shared helpers for page scripts (calculator etc.)
-  window.MBO = { sendLead, track, validate, sourceLines, clearInvalid };
+  window.MBO = { sendLead, track, validate, sourceLines, clearInvalid, usd, onRate: (fn) => rateListeners.push(fn) };
 })();

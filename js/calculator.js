@@ -25,6 +25,8 @@
   const marginSelect = $('calc-margin');
 
   const fmt = (n) => Math.round(n).toLocaleString('uk-UA').replace(/,/g, ' ');
+  const usd = (n) => (window.MBO && window.MBO.usd ? window.MBO.usd(n) : '');
+  const both = (n) => `${fmt(n)} грн${usd(n) ? ` / ${usd(n)}` : ''}`;
   const plural = (n, one, few, many) => {
     const m10 = n % 10, m100 = n % 100;
     if (m10 === 1 && m100 !== 11) return one;
@@ -36,7 +38,7 @@
   const calc = () => {
     const typeKey = root.querySelector('input[name="type"]:checked').value;
     const type = TYPES[typeKey];
-    const lines = [`${type.title} — від ${fmt(type.price)} грн`];
+    const lines = [`${type.title} — від ${both(type.price)}`];
     let price = type.price;
     let [dMin, dMax] = type.days;
 
@@ -54,7 +56,7 @@
       price += extra * PAGE_PRICE;
       const addDays = Math.ceil(extra / PAGES_PER_DAY);
       dMin += addDays; dMax += addDays;
-      lines.push(`+${extra} ${plural(extra, 'сторінка', 'сторінки', 'сторінок')} — ${fmt(extra * PAGE_PRICE)} грн`);
+      lines.push(`+${extra} ${plural(extra, 'сторінка', 'сторінки', 'сторінок')} — ${both(extra * PAGE_PRICE)}`);
     }
 
     // Options (fixed prices first, then percentage ones on top)
@@ -62,19 +64,21 @@
     chosen.filter((k) => OPTIONS[k].price).forEach((k) => {
       const o = OPTIONS[k];
       price += o.price; dMin += o.days[0]; dMax += o.days[1];
-      lines.push(`${o.title} — ${fmt(o.price)} грн`);
+      lines.push(`${o.title} — ${both(o.price)}`);
     });
     chosen.filter((k) => OPTIONS[k].percent).forEach((k) => {
       const o = OPTIONS[k];
       const add = Math.round((price * o.percent) / 100 / 100) * 100;
       price += add; dMin += o.days[0]; dMax += o.days[1];
-      lines.push(`${o.title} (+${o.percent}%) — ${fmt(add)} грн`);
+      lines.push(`${o.title} (+${o.percent}%) — ${both(add)}`);
     });
 
     const term = dMin === dMax ? `${dMin} ${daysWord(dMin)}` : `${dMin}–${dMax} ${daysWord(dMax)}`;
     $('sum-price').textContent = fmt(price);
     $('sum-term').textContent = term;
     $('mbar-price').textContent = fmt(price);
+    $('sum-usd').textContent = usd(price) ? `/ ${usd(price)}` : '';
+    $('mbar-usd').textContent = usd(price) ? `/ ${usd(price)}` : '';
     $('mbar-term').textContent = term;
     $('sum-list').innerHTML = lines.map((l) => `<li>${l}</li>`).join('');
 
@@ -95,7 +99,7 @@
       : '';
 
     // Data for the order form
-    const title = `${type.title}, від ${fmt(price)} грн, ${term}`;
+    const title = `${type.title}, від ${both(price)}, ${term}`;
     $('calc-title-field').value = title;
     $('calc-details-field').value = [...lines, `Термін: ${term}`, check ? `Середній чек: ${fmt(check)} грн → окупність: ${clients} ${plural(clients, 'клієнт', 'клієнти', 'клієнтів')}` : '']
       .filter(Boolean).join('\n');
@@ -104,4 +108,5 @@
   root.addEventListener('input', calc);
   root.addEventListener('change', calc);
   calc();
+  if (window.MBO && window.MBO.onRate) window.MBO.onRate(calc);
 })();

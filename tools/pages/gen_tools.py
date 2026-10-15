@@ -13,11 +13,11 @@ calc_body = hero(
             <legend class="calc__title"><span>1</span>Тип сайту</legend>
             <div class="calc__types">
               <label class="calc-type"><input type="radio" name="type" value="landing" checked>
-                <span class="calc-type__box"><b>Лендінг</b><small>Одна сторінка під послугу</small><em>від 3 000 грн · 2–3 дні</em></span></label>
+                <span class="calc-type__box"><b>Лендінг</b><small>Одна сторінка під послугу</small><em>від 3 000 грн<small class="usd" data-uah="3000"></small> · 2–3 дні</em></span></label>
               <label class="calc-type"><input type="radio" name="type" value="corporate">
-                <span class="calc-type__box"><b>Корпоративний сайт</b><small>До 5 сторінок включено</small><em>від 8 000 грн · 5–7 днів</em></span></label>
+                <span class="calc-type__box"><b>Корпоративний сайт</b><small>До 5 сторінок включено</small><em>від 8 000 грн<small class="usd" data-uah="8000"></small> · 5–7 днів</em></span></label>
               <label class="calc-type"><input type="radio" name="type" value="shop">
-                <span class="calc-type__box"><b>Інтернет-магазин</b><small>Каталог, кошик, замовлення</small><em>від 15 000 грн · 10–14 днів</em></span></label>
+                <span class="calc-type__box"><b>Інтернет-магазин</b><small>Каталог, кошик, замовлення</small><em>від 15 000 грн<small class="usd" data-uah="15000"></small> · 10–14 днів</em></span></label>
             </div>
           </fieldset>
 
@@ -33,8 +33,8 @@ calc_body = hero(
           <fieldset class="calc__block card reveal">
             <legend class="calc__title"><span>3</span>Додаткові опції</legend>
             <div class="calc__opts">
-              <label class="calc-opt"><input type="checkbox" name="opt" value="booking"><span><b>Онлайн-запис</b><small>Клієнт сам обирає послугу, дату й час</small></span><em>+1 000 грн</em></label>
-              <label class="calc-opt"><input type="checkbox" name="opt" value="payment"><span><b>Онлайн-оплата</b><small>Оплата карткою прямо на сайті</small></span><em>+2 000 грн</em></label>
+              <label class="calc-opt"><input type="checkbox" name="opt" value="booking"><span><b>Онлайн-запис</b><small>Клієнт сам обирає послугу, дату й час</small></span><em>+1 000 грн<small class="usd" data-uah="1000"></small></em></label>
+              <label class="calc-opt"><input type="checkbox" name="opt" value="payment"><span><b>Онлайн-оплата</b><small>Оплата карткою прямо на сайті</small></span><em>+2 000 грн<small class="usd" data-uah="2000"></small></em></label>
               <label class="calc-opt"><input type="checkbox" name="opt" value="lang"><span><b>Друга мова</b><small>Наприклад, англійська версія сайту</small></span><em>+30%</em></label>
             </div>
           </fieldset>
@@ -72,7 +72,7 @@ calc_body = hero(
           <div class="summary card">
             <p class="eyebrow">Ваш розрахунок</p>
             <p class="summary__label">Вартість</p>
-            <p class="summary__price">від <b id="sum-price">3 000</b> грн</p>
+            <p class="summary__price">від <b id="sum-price">3 000</b> грн <small class="usd" id="sum-usd"></small></p>
             <p class="summary__label">Термін</p>
             <p class="summary__term" id="sum-term">2–3 дні</p>
             <ul class="summary__list" id="sum-list"></ul>
@@ -85,12 +85,13 @@ calc_body = hero(
               <p class="form__status" role="status" aria-live="polite"></p>
               {CONSENT}
             </form>
+            <p class="summary__note" data-rate-note></p>
             <p class="summary__note">Розрахунок орієнтовний. Точну вартість назвемо після короткого брифу — і зафіксуємо до старту.</p>
           </div>
         </aside>
       </div>
       <div class="calc-mbar" aria-hidden="true">
-        <p>від <b id="mbar-price">3 000</b> грн<span id="mbar-term">2–3 дні</span></p>
+        <p>від <b id="mbar-price">3 000</b> грн <small class="usd" id="mbar-usd"></small><span id="mbar-term">2–3 дні</span></p>
         <a href="#calc-order" class="btn btn--primary" tabindex="-1">Замовити</a>
       </div>
     </section>
@@ -99,7 +100,7 @@ page('calculator.html',
      'Калькулятор вартості сайту та окупності | MBO Solutions',
      'Порахуйте вартість і термін створення сайту: лендінг від 3 000 грн, корпоративний сайт від 8 000 грн, інтернет-магазин від 15 000 грн. І дізнайтесь, скільки клієнтів потрібно, щоб сайт окупився.',
      calc_body, active='/calculator.html',
-     scripts=f'\n  <script src="/js/calculator.js?v=1" defer></script>')
+     scripts=f'\n  <script src="/js/calculator.js?v=2" defer></script>')
 
 # ---------------------------------------------------------------- Audit
 checks = [
