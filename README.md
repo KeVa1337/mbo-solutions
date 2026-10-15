@@ -5,11 +5,25 @@
 ## Структура
 
 ```
-index.html          — уся сторінка (секції: Hero, Послуги, Кейси, Чому MBO, Процес, Про нас, FAQ, Контакти)
-css/style.css       — стилі (кольори та розміри в змінних :root)
-js/main.js          — меню, анімації появи, активний пункт меню, форма заявки
-assets/img/         — зображення (WebP) та og-image.jpg для соцмереж
-assets/favicon.svg  — іконка сайту
+index.html            — головна (Hero, Послуги, Кейси, Ціни, Корисне, Квіз, Про нас, FAQ, Контакти)
+calculator.html       — калькулятор вартості й окупності (ціни — у js/calculator.js, блок TYPES/OPTIONS)
+audit.html            — безкоштовний експрес-аудит
+examples/             — «Сайт для вашого бізнесу»: index + демо detailing / sto / beauty / tires (noindex)
+guides/               — гайди: Google Maps, сайт автосервісу, шапка Instagram
+privacy.html          — політика конфіденційності
+css/style.css         — спільні стилі; css/pages.css — підсторінки; css/demo.css — демо-сайти
+js/main.js            — анімації, меню, форми (будь-яка <form data-lead-form>), трекінг
+js/config.js          — ID Google Ads / Analytics (для всіх сторінок)
+tools/pages/          — генератор підсторінок (на сервері закритий через .htaccess)
+assets/               — зображення, шрифти, іконка
+```
+
+### Як змінювати підсторінки
+
+Шапка, логотип і футер підсторінок копіюються з `index.html`. Тексти — у `tools/pages/gen_*.py`. Після змін:
+
+```bash
+python3 tools/pages/build.py
 ```
 
 ## Анімації та ефекти
@@ -42,7 +56,7 @@ python3 -m http.server 8000
 
 ## Google Реклама та аналітика
 
-ID вписуються в одному місці — блок `window.MBO_TRACKING` у `<head>` файлу `index.html`:
+ID вписуються в одному місці — файл `js/config.js` (діє на всіх сторінках). Після зміни збільшіть `?v=` у підключенні `js/config.js?v=…` (index.html та `tools/pages/common.py` → `build.py`).
 
 | Поле | Що це | Де взяти |
 |---|---|---|

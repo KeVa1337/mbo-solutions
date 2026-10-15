@@ -28,18 +28,10 @@
       } catch (e) { d.classList.add('skip-intro'); }
     })(document.documentElement);
   </script>
-  <script>
-    // ===== Google Ads / Google Analytics — вставте свої ID (порожньо = вимкнено) =====
-    window.MBO_TRACKING = {
-      adsId: '',      // ID Google Ads, напр. 'AW-123456789'
-      leadLabel: '',  // мітка конверсії «Заявка з сайту», напр. 'AbCdEfGhIjK'
-      callLabel: '',  // мітка конверсії «Дзвінок / Viber / Telegram» (необов’язково)
-      ga4Id: ''       // ID Google Analytics 4, напр. 'G-XXXXXXXXXX' (необов’язково)
-    };
-  </script>
+  <script src="js/config.js?v=1"></script>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=9">
+  <link rel="stylesheet" href="css/style.css?v=10">
   <link rel="preload" as="image" href="assets/img/hero-mockup-sm.webp" media="(max-width: 600px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/img/hero-mockup.webp" imagesrcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" imagesizes="(max-width: 960px) 92vw, 540px" media="(min-width: 601px)" fetchpriority="high">
 
@@ -104,10 +96,10 @@
       <nav class="nav" id="nav" aria-label="Головна навігація">
         <ul class="nav__list">
           <li><a href="#services" class="nav__link">Послуги</a></li>
-          <li><a href="#cases" class="nav__link">Кейси</a></li>
           <li><a href="#pricing" class="nav__link">Ціни</a></li>
-          <li><a href="#about" class="nav__link">Про нас</a></li>
-          <li><a href="#faq" class="nav__link">FAQ</a></li>
+          <li><a href="/calculator.html" class="nav__link">Калькулятор</a></li>
+          <li><a href="/examples/" class="nav__link">Приклади</a></li>
+          <li><a href="/guides/" class="nav__link">Гайди</a></li>
           <li><a href="#contact" class="nav__link">Контакти</a></li>
         </ul>
         <a href="tel:+380636640606" class="nav__phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>+380 63 664 06 06</a>
@@ -134,7 +126,7 @@
           <p class="hero__lead intro" style="--d:.7s">Розробка сучасних сайтів для бізнесу з фокусом на результат. Продуманий дизайн, зручна структура, висока конверсія.</p>
           <div class="hero__actions intro" style="--d:.85s">
             <a href="#contact" class="btn btn--primary" data-magnetic>Запустити проєкт <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <a href="#quiz" class="btn btn--ghost" data-magnetic>Підібрати рішення за 1 хв</a>
+            <a href="/calculator.html" class="btn btn--ghost" data-magnetic>Розрахувати вартість</a>
           </div>
           <a href="#gift" class="hero__gift intro" style="--d:1s"><span class="hero__gift-ico" aria-hidden="true">🎁</span><span>Концепт першого екрана для вашого бізнесу — <b>безкоштовно</b></span></a>
         </div>
@@ -428,6 +420,12 @@
           </div>
         </div>
 
+        <ul class="terms reveal">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><span><b>Домен і всі файли — ваші</b>Оформлюємо на вас, а не на студію</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2-1.4 0-2.6-.6-3-1.6M12 6v2M12 16v2"/></svg><span><b>Жодних прихованих платежів</b>Ціну фіксуємо до старту робіт</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span><b>Сайт можна забрати будь-коли</b>Ніяких «заручників» і доплат за вихід</span></li>
+        </ul>
+
         <div class="gift reveal" id="gift">
           <div class="gift__ico" aria-hidden="true">🎁</div>
           <div class="gift__text">
@@ -436,6 +434,42 @@
             <p>Покажемо, як може виглядати ваш сайт, ще до оплати. Без зобов’язань — просто напишіть, чим ви займаєтесь.</p>
           </div>
           <a href="#contact" class="btn btn--primary" data-plan="Безкоштовний концепт першого екрана" data-magnetic>Отримати концепт <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Tools (links to separate pages) ===== -->
+    <section class="section section--alt" id="tools">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal">Корисне</p>
+          <h2 class="section__title" data-split>Інструменти для <span class="grad">вашого бізнесу</span></h2>
+        </div>
+        <div class="tools">
+          <a href="/calculator.html" class="tool card spot reveal" style="--d:0s">
+            <span class="tool__ico" aria-hidden="true">🧮</span>
+            <h3>Калькулятор вартості й окупності</h3>
+            <p>Оберіть тип сайту й опції — побачите ціну, термін і скільки клієнтів потрібно, щоб сайт окупився.</p>
+            <span class="tool__cta">Розрахувати <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/audit.html" class="tool card spot reveal" style="--d:.06s">
+            <span class="tool__ico" aria-hidden="true">🔍</span>
+            <h3>Безкоштовний експрес-аудит</h3>
+            <p>Надішліть посилання на Instagram чи сайт — за добу отримаєте 5 порад, як мати більше заявок.</p>
+            <span class="tool__cta">Отримати аудит <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/examples/" class="tool card spot reveal" style="--d:.12s">
+            <span class="tool__ico" aria-hidden="true">🚗</span>
+            <h3>Приклади під вашу нішу</h3>
+            <p>Демо-сайти для детейлінгу, СТО, салону краси й магазину шин — подивіться, як може виглядати ваш.</p>
+            <span class="tool__cta">Дивитись приклади <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="/guides/" class="tool card spot reveal" style="--d:.18s">
+            <span class="tool__ico" aria-hidden="true">📘</span>
+            <h3>Гайди для місцевого бізнесу</h3>
+            <p>Як отримувати клієнтів з Google Maps, що має бути на сайті автосервісу та інші короткі поради.</p>
+            <span class="tool__cta">Читати гайди <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
         </div>
       </div>
     </section>
@@ -572,6 +606,10 @@
             <summary>А якщо мені не сподобається результат?</summary>
             <div class="faq__body"><p>Вносимо правки безкоштовно, доки результат вам не сподобається. А ще до оплати можемо безкоштовно зробити концепт першого екрана — щоб ви побачили наш підхід.</p></div>
           </details>
+          <details class="reveal" style="--d:.1s">
+            <summary>Кому належатиме сайт?</summary>
+            <div class="faq__body"><p>Вам. Домен і всі файли оформлюємо на вас, доступи передаємо після запуску. Сайт можна забрати будь-коли — без доплат і «заручників».</p></div>
+          </details>
           <details class="reveal" style="--d:.12s">
             <summary>Що потрібно від мене для старту?</summary>
             <div class="faq__body"><p>Розповідь про бізнес, цілі сайту та приклади, які вам подобаються. Якщо немає текстів чи фото — допоможемо з ними.</p></div>
@@ -605,18 +643,18 @@
           </ul>
         </div>
 
-        <form class="form card spot reveal reveal--zoom" id="contact-form" style="--d:.15s" novalidate>
+        <form class="form card spot reveal reveal--zoom" id="contact-form" style="--d:.15s" data-lead-form="contact_form" data-subject="Заявка з сайту: {type}" novalidate>
           <div class="form__row">
             <label for="f-name">Ваше ім’я</label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Як до вас звертатися">
+            <input id="f-name" name="name" data-label="Ім’я" type="text" autocomplete="name" required placeholder="Як до вас звертатися">
           </div>
           <div class="form__row">
             <label for="f-contact">Телефон або Telegram</label>
-            <input id="f-contact" name="contact" type="text" autocomplete="tel" required placeholder="+380 або @username">
+            <input id="f-contact" name="contact" data-label="Контакт" type="text" autocomplete="tel" required placeholder="+380 або @username">
           </div>
           <div class="form__row">
             <label for="f-type">Що потрібно</label>
-            <select id="f-type" name="type">
+            <select id="f-type" name="type" data-label="Тип проєкту">
               <option>Лендінг</option>
               <option>Корпоративний сайт</option>
               <option>Інтернет-магазин</option>
@@ -627,7 +665,7 @@
           </div>
           <div class="form__row">
             <label for="f-msg">Коротко про проєкт</label>
-            <textarea id="f-msg" name="message" rows="4" placeholder="Чим займається ваш бізнес і яка мета сайту"></textarea>
+            <textarea id="f-msg" name="message" data-label="Про проєкт" rows="4" placeholder="Чим займається ваш бізнес і яка мета сайту"></textarea>
           </div>
           <button type="submit" class="btn btn--primary btn--block">Надіслати заявку <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
           <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
@@ -661,6 +699,6 @@
     <svg class="to-top__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </a>
 
-  <script src="js/main.js?v=9" defer></script>
+  <script src="js/main.js?v=10" defer></script>
 </body>
 </html>

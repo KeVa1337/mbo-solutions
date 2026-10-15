@@ -685,6 +685,24 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .gift h3 { font-size: 24px; }
 .gift__text > p:last-child { margin-top: 6px; color: var(--muted); }
 
+/* ---------- Honest terms ---------- */
+.terms { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.terms li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); }
+.terms svg { width: 26px; height: 26px; color: var(--accent-light); margin-top: 2px; }
+.terms b { display: block; font-size: 16px; margin-bottom: 2px; }
+.terms span { font-size: 14px; color: var(--muted); }
+
+/* ---------- Tools (links to pages) ---------- */
+.tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.tool { display: flex; flex-direction: column; padding: 28px 24px; }
+.tool:hover { border-color: rgba(167, 139, 250, .25); transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(139, 92, 246, .55); }
+.tool__ico { font-size: 36px; line-height: 1; margin-bottom: 18px; }
+.tool h3 { font-size: 18px; margin-bottom: 8px; }
+.tool p { color: var(--muted); font-size: 14.5px; flex: 1; }
+.tool__cta { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--accent-light); }
+.tool__cta .ico-arrow { width: 16px; height: 16px; stroke-width: 2; transition: transform .3s var(--ease); }
+.tool:hover .ico-arrow { transform: translateX(4px); }
+
 /* ---------- Proof points ---------- */
 .proof__points { margin-top: 26px; display: grid; gap: 12px; }
 .proof__points li { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 600; }
@@ -869,6 +887,8 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 @media (max-width: 1080px) {
   .nav__list { gap: 22px; }
   .plans { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; gap: 28px; }
+  .tools { grid-template-columns: repeat(2, 1fr); }
+  .terms { grid-template-columns: 1fr; }
   .gift { grid-template-columns: auto 1fr; }
   .gift .btn { grid-column: 1 / -1; justify-self: start; }
   .steps { grid-template-columns: repeat(3, 1fr); }
@@ -967,6 +987,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .case-next .btn { width: 100%; }
   .about__photo { margin: 0 14px; }
   .proof__points { justify-items: start; text-align: left; }
+  .tools { grid-template-columns: 1fr; }
   .guarantee { flex-direction: column; align-items: flex-start; padding: 24px 22px; }
   .gift { grid-template-columns: 1fr; padding: 26px 22px; gap: 16px; }
   .gift__ico { font-size: 44px; }

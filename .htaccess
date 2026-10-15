@@ -4,7 +4,8 @@ Options -Indexes
 
 # ---------- Hide repository and service files ----------
 RedirectMatch 404 /\.git
-<FilesMatch "^(README\.md|\.nojekyll|\.gitignore)$">
+RedirectMatch 404 ^/tools/
+<FilesMatch "^(README\.md|\.nojekyll|\.gitignore)$|\.py$">
   Require all denied
 </FilesMatch>
 

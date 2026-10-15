@@ -122,7 +122,10 @@
 
   /* ---------- Active nav link ---------- */
   const links = [...document.querySelectorAll('.nav__link')];
-  const sections = links.map((l) => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  const sections = links
+    .filter((l) => l.getAttribute('href').startsWith('#'))
+    .map((l) => document.querySelector(l.getAttribute('href')))
+    .filter(Boolean);
   if (hasIO) {
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -156,9 +159,11 @@
     header.classList.toggle('is-hidden', goingDown && y > 400 && !nav.classList.contains('is-open'));
     lastY = y;
 
-    progressBar.style.transform = `scaleX(${p})`;
-    toTop.classList.toggle('is-visible', y > 700);
-    toTopFill.style.strokeDashoffset = String(RING * (1 - p));
+    if (progressBar) progressBar.style.transform = `scaleX(${p})`;
+    if (toTop) {
+      toTop.classList.toggle('is-visible', y > 700);
+      toTopFill.style.strokeDashoffset = String(RING * (1 - p));
+    }
 
     if (stepsRect) {
       const sp = Math.min(1, Math.max(0, (vh * 0.85 - stepsRect.top) / (stepsRect.height + vh * 0.25)));
@@ -386,36 +391,38 @@
   };
   const clearInvalid = (e) => { if (e.target.value && e.target.value.trim()) e.target.classList.remove('is-invalid'); };
 
-  const form = document.getElementById('contact-form');
-  const status = document.getElementById('form-status');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const invalid = validate(form);
-    if (invalid) {
-      status.textContent = 'Будь ласка, заповніть ім’я та контакт.';
-      status.classList.add('is-error');
-      invalid.focus();
-      return;
-    }
-    const data = new FormData(form);
-    sendLead(`Заявка з сайту: ${data.get('type')}`, [
-      `Ім’я: ${data.get('name')}`,
-      `Контакт: ${data.get('contact')}`,
-      `Тип проєкту: ${data.get('type')}`,
-      '',
-      data.get('message') || '',
-      ...sourceLines(),
-    ]);
-    track('lead', 'contact_form');
-    status.classList.remove('is-error');
-    status.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
+  /* Generic lead forms: <form data-lead-form="method" data-subject="Text {fieldName}">
+     Every named field with a value goes into the email, labelled by data-label (or its <label>). */
+  document.querySelectorAll('form[data-lead-form]').forEach((f) => {
+    const st = f.querySelector('.form__status');
+    f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const invalid = validate(f);
+      if (invalid) {
+        st.textContent = 'Будь ласка, заповніть обов’язкові поля.';
+        st.classList.add('is-error');
+        invalid.focus();
+        return;
+      }
+      const data = new FormData(f);
+      const subject = (f.dataset.subject || 'Заявка з сайту').replace(/\{(\w+)\}/g, (_, k) => data.get(k) || '');
+      const lines = [...f.elements]
+        .filter((el) => el.name && el.value && el.value.trim())
+        .map((el) => {
+          const label = el.dataset.label || (el.labels && el.labels[0] && el.labels[0].textContent.trim()) || el.name;
+          return el.tagName === 'TEXTAREA' ? `\n${label}:\n${el.value.trim()}` : `${label}: ${el.value.trim()}`;
+        });
+      sendLead(subject, [...lines, ...sourceLines()]);
+      track('lead', f.dataset.leadForm);
+      st.classList.remove('is-error');
+      st.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
+    });
+    f.addEventListener('input', clearInvalid);
   });
-  form.addEventListener('input', clearInvalid);
 
   // Package / gift buttons preselect "what do you need" in the contact form
   const typeSelect = document.getElementById('f-type');
-  document.querySelectorAll('[data-plan]').forEach((btn) => {
+  if (typeSelect) document.querySelectorAll('[data-plan]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const opt = [...typeSelect.options].find((o) => o.value === btn.dataset.plan);
       if (opt) typeSelect.value = opt.value;
@@ -643,5 +650,9 @@
     });
   });
 
-  document.getElementById('year').textContent = new Date().getFullYear();
+  const year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
+
+  // Shared helpers for page scripts (calculator etc.)
+  window.MBO = { sendLead, track, validate, sourceLines, clearInvalid };
 })();
