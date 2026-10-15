@@ -709,6 +709,20 @@
   if (document.readyState === 'complete') whenIdle();
   else window.addEventListener('load', whenIdle, { once: true });
 
+  /* ---------- Tab "come back" state: favicon with a dot + friendly title while the tab is hidden ---------- */
+  const tabIcon = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+  const pageTitle = document.title;
+  document.addEventListener('visibilitychange', () => {
+    if (!tabIcon) return;
+    if (document.hidden) {
+      tabIcon.href = '/assets/favicon-away.svg';
+      document.title = '👋 Повертайтесь — MBO Solutions';
+    } else {
+      tabIcon.href = '/assets/favicon.svg';
+      document.title = pageTitle;
+    }
+  });
+
   // Shared helpers for page scripts (calculator etc.)
   window.MBO = { sendLead, track, validate, sourceLines, clearInvalid, usd, onRate: (fn) => rateListeners.push(fn) };
 })();

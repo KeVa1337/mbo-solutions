@@ -60,7 +60,10 @@ def page(path, title, description, body, active=None, extra_head='', scripts='',
   <meta name="twitter:card" content="summary_large_image">
   <script>document.documentElement.classList.add('js', 'skip-intro');</script>
   <script src="/js/config.js?v=1"></script>
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" href="/assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/style.css?v={CSS_V}">
   <link rel="stylesheet" href="/css/pages.css?v={PAGES_V}">{extra_head}{ld_html}
