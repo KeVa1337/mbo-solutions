@@ -376,6 +376,15 @@
   });
   form.addEventListener('input', clearInvalid);
 
+  // Package / gift buttons preselect "what do you need" in the contact form
+  const typeSelect = document.getElementById('f-type');
+  document.querySelectorAll('[data-plan]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const opt = [...typeSelect.options].find((o) => o.value === btn.dataset.plan);
+      if (opt) typeSelect.value = opt.value;
+    });
+  });
+
   /* ---------- Quiz ---------- */
   const quiz = document.getElementById('quiz-card');
   if (quiz) {
@@ -392,9 +401,9 @@
     let current = 0;
 
     const PRODUCTS = {
-      landing: { title: 'Лендінг', text: 'Односторінковий сайт з чіткою структурою, який веде відвідувача до заявки. Оптимальний старт, щоб швидко отримувати клієнтів з реклами.' },
-      corporate: { title: 'Корпоративний сайт', text: 'Багатосторінковий сайт, що розповідає про компанію й послуги та формує довіру — особливо важливо для B2B і виробництва.' },
-      shop: { title: 'Інтернет-магазин', text: 'Каталог, кошик і зручне оформлення замовлення — щоб покупцю було легко дійти до оплати.' },
+      landing: { title: 'Лендінг', price: 'від 3 000 грн', term: '2–3 дні', text: 'Односторінковий сайт з чіткою структурою, який веде відвідувача до заявки. Оптимальний старт, щоб швидко отримувати клієнтів з реклами.' },
+      corporate: { title: 'Корпоративний сайт', price: 'від 8 000 грн', term: '5–7 днів', text: 'Багатосторінковий сайт, що розповідає про компанію й послуги та формує довіру — особливо важливо для B2B і виробництва.' },
+      shop: { title: 'Інтернет-магазин', price: 'від 15 000 грн', term: '10–14 днів', text: 'Каталог, кошик і зручне оформлення замовлення — щоб покупцю було легко дійти до оплати.' },
     };
     const BRAND = {
       partial: 'Доопрацюємо фірмовий стиль навколо вашого логотипа, щоб сайт виглядав цілісно.',
@@ -416,7 +425,7 @@
       document.getElementById('quiz-result-title').textContent = p.title + (needsBrand ? ' + брендинг' : '');
       document.getElementById('quiz-result-text').textContent =
         [p.text, needsBrand ? BRAND[answers.brand] : '', TIMING[answers.timing]].filter(Boolean).join(' ');
-      const tags = [p.title, needsBrand && 'Брендинг', 'Адаптив', 'Підтримка'].filter(Boolean);
+      const tags = [p.price, `⚡ ${p.term}`, needsBrand && 'Брендинг', 'Безкоштовні правки'].filter(Boolean);
       document.getElementById('quiz-result-tags').innerHTML = tags.map((t) => `<li>${t}</li>`).join('');
       return p.title + (needsBrand ? ' + брендинг' : '');
     };
