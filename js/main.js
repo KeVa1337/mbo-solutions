@@ -94,7 +94,7 @@
   // After the entrance finishes, drop the reveal classes so hover transforms work normally.
   const cleanup = (el) => {
     if (!el.classList.contains('reveal')) return;
-    const delay = parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0;
+    const delay = parseFloat(el.style.getPropertyValue('--d')) || 0;
     setTimeout(() => el.classList.remove('reveal', 'reveal--left', 'reveal--zoom', 'is-visible'), delay * 1000 + 1000);
   };
   if (hasIO && !reduceMotion) {
@@ -140,13 +140,16 @@
   const RING = 138.23;
   const stepsWrap = document.getElementById('steps');
   const steps = stepsWrap ? [...stepsWrap.querySelectorAll('.step')] : [];
-  let lastY = window.scrollY;
+  let lastY = 0;
   let ticking = false;
 
   const onScroll = () => {
+    // Read all layout values first, then write — avoids forced reflows
     const y = window.scrollY;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const vh = window.innerHeight;
+    const max = document.documentElement.scrollHeight - vh;
     const p = max > 0 ? Math.min(1, y / max) : 0;
+    const stepsRect = stepsWrap ? stepsWrap.getBoundingClientRect() : null;
 
     header.classList.toggle('is-scrolled', y > 10);
     const goingDown = y > lastY;
@@ -157,10 +160,8 @@
     toTop.classList.toggle('is-visible', y > 700);
     toTopFill.style.strokeDashoffset = String(RING * (1 - p));
 
-    if (stepsWrap) {
-      const r = stepsWrap.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const sp = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.25)));
+    if (stepsRect) {
+      const sp = Math.min(1, Math.max(0, (vh * 0.85 - stepsRect.top) / (stepsRect.height + vh * 0.25)));
       stepsWrap.style.setProperty('--p', sp.toFixed(3));
       steps.forEach((s, i) => s.classList.toggle('is-active', sp >= (i + 0.35) / steps.length));
     }
@@ -169,8 +170,8 @@
   window.addEventListener('scroll', () => {
     if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
-  window.addEventListener('resize', onScroll);
-  onScroll();
+  window.addEventListener('resize', () => requestAnimationFrame(onScroll));
+  requestAnimationFrame(onScroll);
 
   /* ---------- Pointer effects (desktop only) ---------- */
   if (finePointer && !reduceMotion) {
@@ -183,48 +184,21 @@
       card.style.setProperty('--my', `${e.clientY - r.top}px`);
     }, { passive: true });
 
-    // Cursor glow + custom cursor, one eased animation loop
+    // Soft glow that follows the cursor (the cursor itself stays native)
     const glow = document.getElementById('cursor-glow');
-    const cursor = document.getElementById('cursor');
-    const cDot = cursor.querySelector('.cursor__dot');
-    const cFollow = cursor.querySelector('.cursor__follow');
-    const cLabel = cursor.querySelector('.cursor__label');
-    root.classList.add('has-cursor');
-
     let tx = innerWidth / 2, ty = innerHeight / 2;
-    let gx = tx, gy = ty, rx = tx, ry = ty, loopRAF = null;
+    let gx = tx, gy = ty, loopRAF = null;
     const loop = () => {
       gx += (tx - gx) * 0.12; gy += (ty - gy) * 0.12;
-      rx += (tx - rx) * 0.22; ry += (ty - ry) * 0.22;
       glow.style.transform = `translate3d(${gx}px, ${gy}px, 0)`;
-      cFollow.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
       loopRAF = Math.abs(tx - gx) + Math.abs(ty - gy) > 0.3 ? requestAnimationFrame(loop) : null;
     };
     window.addEventListener('pointermove', (e) => {
       tx = e.clientX; ty = e.clientY;
-      cDot.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
       glow.classList.add('is-active');
-      cursor.classList.add('is-visible');
       if (!loopRAF) loopRAF = requestAnimationFrame(loop);
     }, { passive: true });
-    document.addEventListener('pointerleave', () => {
-      glow.classList.remove('is-active');
-      cursor.classList.remove('is-visible');
-    });
-    window.addEventListener('pointerdown', () => cursor.classList.add('is-down'));
-    window.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
-
-    // Cursor states: label over [data-cursor], grow over interactive, caret over fields
-    document.addEventListener('pointerover', (e) => {
-      const t = e.target;
-      const labelled = t.closest('[data-cursor]');
-      const field = t.closest('input, textarea, select');
-      const interactive = t.closest('a, button, summary, label, [data-magnetic]');
-      cursor.classList.toggle('is-text', !!field);
-      cursor.classList.toggle('is-label', !!labelled && !interactive && !field);
-      cursor.classList.toggle('is-hover', !!interactive && !field);
-      if (labelled) cLabel.textContent = labelled.dataset.cursor;
-    });
+    document.addEventListener('pointerleave', () => glow.classList.remove('is-active'));
 
     // 3D tilt
     document.querySelectorAll('[data-tilt]').forEach((el) => {
@@ -330,6 +304,67 @@
     document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
   }
 
+  /* ---------- Google Ads / GA4 tracking (configured in index.html → window.MBO_TRACKING) ---------- */
+  const T = window.MBO_TRACKING || {};
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  const trackingOn = !!(T.adsId || T.ga4Id);
+
+  // Remember where the visitor came from (ad click id + UTM) for the whole visit
+  const SOURCE_KEYS = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+  const source = (() => {
+    let saved = {};
+    try { saved = JSON.parse(sessionStorage.getItem('mbo-source') || '{}'); } catch (e) { /* ignore */ }
+    const params = new URLSearchParams(location.search);
+    const fresh = {};
+    SOURCE_KEYS.forEach((k) => { if (params.get(k)) fresh[k] = params.get(k); });
+    const result = Object.keys(fresh).length ? fresh : saved;
+    try { sessionStorage.setItem('mbo-source', JSON.stringify(result)); } catch (e) { /* ignore */ }
+    return result;
+  })();
+  const sourceLines = () => {
+    if (!Object.keys(source).length) return [];
+    const ad = source.gclid || source.gbraid || source.wbraid ? 'Google Реклама' : '';
+    const utm = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term'].map((k) => source[k]).filter(Boolean).join(' / ');
+    return ['', `Джерело: ${[ad, utm].filter(Boolean).join(' · ')}`];
+  };
+
+  if (trackingOn) {
+    gtag('js', new Date());
+    if (T.adsId) gtag('config', T.adsId);
+    if (T.ga4Id) gtag('config', T.ga4Id);
+    // Load Google's script after the page is ready, so it never slows down the first screen
+    const loadGtag = () => {
+      const sc = document.createElement('script');
+      sc.async = true;
+      sc.src = `https://www.googletagmanager.com/gtag/js?id=${T.adsId || T.ga4Id}`;
+      document.head.appendChild(sc);
+    };
+    const later = () => ('requestIdleCallback' in window ? requestIdleCallback(loadGtag, { timeout: 3000 }) : setTimeout(loadGtag, 1500));
+    if (document.readyState === 'complete') later();
+    else window.addEventListener('load', later, { once: true });
+  }
+
+  const track = (kind, method) => {
+    if (!trackingOn) return;
+    const label = kind === 'lead' ? T.leadLabel : T.callLabel;
+    if (T.adsId && label) gtag('event', 'conversion', { send_to: `${T.adsId}/${label}` });
+    gtag('event', kind === 'lead' ? 'generate_lead' : 'contact', { method });
+  };
+
+  // Calls, Viber, Telegram, email, Instagram clicks
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    const method = href.startsWith('tel:') ? 'phone'
+      : href.startsWith('viber:') ? 'viber'
+      : href.includes('t.me/') ? 'telegram'
+      : href.startsWith('mailto:') ? 'email'
+      : href.includes('instagram.com') ? 'instagram' : '';
+    if (method) track('contact', method);
+  });
+
   /* ---------- Leads → prefilled email (no backend needed) ---------- */
   const EMAIL = 'hello@mbo-solutions.com';
   const sendLead = (subject, lines) => {
@@ -370,7 +405,9 @@
       `Тип проєкту: ${data.get('type')}`,
       '',
       data.get('message') || '',
+      ...sourceLines(),
     ]);
+    track('lead', 'contact_form');
     status.classList.remove('is-error');
     status.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
   });
@@ -485,7 +522,9 @@
         `Запуск: ${labels.timing}`,
         '',
         `Рекомендація: ${result}`,
+        ...sourceLines(),
       ]);
+      track('lead', 'quiz');
       quizStatus.classList.remove('is-error');
       quizStatus.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
     });

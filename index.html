@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MBO Solutions — сайти, які приводять реальних клієнтів</title>
-  <meta name="description" content="MBO Solutions — розробка сучасних сайтів для бізнесу: продуманий дизайн, зручна структура, висока конверсія. Лендінги, корпоративні сайти, інтернет-магазини та брендинг.">
+  <title>Розробка сайтів під ключ від 3 000 грн — лендінг за 2–3 дні | MBO Solutions</title>
+  <meta name="description" content="Створюємо сайти, які приводять клієнтів: лендінг від 3 000 грн за 2–3 дні, корпоративний сайт від 8 000 грн, інтернет-магазин від 15 000 грн. Безкоштовні правки та концепт першого екрана. ☎ +380 63 664 06 06">
   <meta name="theme-color" content="#07060b">
   <meta name="color-scheme" content="dark">
   <link rel="canonical" href="https://mbo-solutions.com/">
@@ -12,8 +12,8 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="uk_UA">
   <meta property="og:site_name" content="MBO Solutions">
-  <meta property="og:title" content="MBO Solutions — сайти, які приводять реальних клієнтів">
-  <meta property="og:description" content="Сучасні сайти для розвитку вашого бізнесу. Продуманий дизайн, зручна структура, висока конверсія.">
+  <meta property="og:title" content="Розробка сайтів під ключ від 3 000 грн — MBO Solutions">
+  <meta property="og:description" content="Лендінг за 2–3 дні від 3 000 грн. Безкоштовні правки, доки результат вам не сподобається.">
   <meta property="og:url" content="https://mbo-solutions.com/">
   <meta property="og:image" content="https://mbo-solutions.com/assets/img/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -28,9 +28,18 @@
       } catch (e) { d.classList.add('skip-intro'); }
     })(document.documentElement);
   </script>
+  <script>
+    // ===== Google Ads / Google Analytics — вставте свої ID (порожньо = вимкнено) =====
+    window.MBO_TRACKING = {
+      adsId: '',      // ID Google Ads, напр. 'AW-123456789'
+      leadLabel: '',  // мітка конверсії «Заявка з сайту», напр. 'AbCdEfGhIjK'
+      callLabel: '',  // мітка конверсії «Дзвінок / Viber / Telegram» (необов’язково)
+      ga4Id: ''       // ID Google Analytics 4, напр. 'G-XXXXXXXXXX' (необов’язково)
+    };
+  </script>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
   <link rel="preload" as="image" href="assets/img/hero-mockup-sm.webp" media="(max-width: 600px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/img/hero-mockup.webp" imagesrcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" imagesizes="(max-width: 960px) 92vw, 540px" media="(min-width: 601px)" fetchpriority="high">
 
@@ -82,10 +91,6 @@
 
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
   <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
-  <div class="cursor" id="cursor" aria-hidden="true">
-    <div class="cursor__dot"></div>
-    <div class="cursor__follow"><div class="cursor__ring"><span class="cursor__label"></span></div></div>
-  </div>
 
   <a class="skip-link" href="#main">Перейти до змісту</a>
 
@@ -135,7 +140,7 @@
         </div>
 
         <div class="hero__visual intro intro--zoom" style="--d:.35s">
-          <div class="tilt" data-tilt data-cursor="3D">
+          <div class="tilt" data-tilt>
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/hero-mockup-sm.webp">
               <img src="assets/img/hero-mockup.webp" srcset="assets/img/hero-mockup-sm.webp 720w, assets/img/hero-mockup.webp 1254w" sizes="(max-width: 960px) 92vw, 540px" width="1254" height="1254" decoding="async" alt="Сайт MBO Solutions на ноутбуці та смартфоні" fetchpriority="high">
@@ -244,7 +249,7 @@
         </div>
 
         <article class="case spot reveal">
-          <div class="case__media reveal-img" data-cursor="LUMEX">
+          <div class="case__media reveal-img">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/case-lumex-sm.webp">
               <img src="assets/img/case-lumex.webp" srcset="assets/img/case-lumex-sm.webp 720w, assets/img/case-lumex.webp 1280w" sizes="(max-width: 1080px) 92vw, 680px" width="1280" height="853" loading="lazy" decoding="async" alt="Сайт LUMEX на ноутбуці та смартфоні">
@@ -502,6 +507,7 @@
               </div>
               <button type="submit" class="btn btn--primary btn--block">Отримати пропозицію <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
               <p class="form__status" id="quiz-status" role="status" aria-live="polite"></p>
+              <p class="form__consent">Надсилаючи заявку, ви погоджуєтесь з <a href="privacy.html">політикою конфіденційності</a>.</p>
             </form>
           </div>
           </div>
@@ -517,7 +523,7 @@
     <!-- ===== About ===== -->
     <section class="section" id="about">
       <div class="container about">
-        <div class="about__photo" data-cursor="Привіт!">
+        <div class="about__photo">
           <div class="reveal-img">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/img/founder-sm.webp">
@@ -625,13 +631,14 @@
           </div>
           <button type="submit" class="btn btn--primary btn--block">Надіслати заявку <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
           <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+          <p class="form__consent">Надсилаючи заявку, ви погоджуєтесь з <a href="privacy.html">політикою конфіденційності</a>.</p>
         </form>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="footer__big" aria-hidden="true" data-split="chars">MBO SOLUTIONS</div>
+    <div class="footer__big reveal" aria-hidden="true" data-text="MBO SOLUTIONS"></div>
     <div class="container footer__inner">
       <a href="#top" class="logo logo--sm" aria-label="MBO Solutions — на головну">
         <svg class="logo__svg" viewBox="0 0 166 64" role="img" aria-label="MBO Solutions"><title>MBO Solutions</title><use href="#logo"/></svg>
@@ -640,7 +647,7 @@
         <a href="tel:+380636640606" class="footer__phone">+380 63 664 06 06</a>
         <span>Дзвінки · <a href="viber://chat?number=%2B380636640606">Viber</a> · <a href="https://t.me/mbo_solutions" target="_blank" rel="noopener">Telegram</a></span>
       </div>
-      <p class="footer__copy">© <span id="year">2026</span> MBO Solutions. Усі права захищено.</p>
+      <p class="footer__copy">© <span id="year">2026</span> MBO Solutions. Усі права захищено.<br><a href="privacy.html">Політика конфіденційності</a></p>
     </div>
   </footer>
 
@@ -654,6 +661,6 @@
     <svg class="to-top__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </a>
 
-  <script src="js/main.js?v=8" defer></script>
+  <script src="js/main.js?v=9" defer></script>
 </body>
 </html>
