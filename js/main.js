@@ -756,6 +756,13 @@
     }
   });
 
+  // «Знижка 15% для перших клієнтів» — prefill the contact form so the lead shows it
+  document.querySelectorAll('[data-offer="first15"]').forEach((a) => a.addEventListener('click', () => {
+    const msg = document.getElementById('f-msg');
+    const note = 'Хочу знижку 15% для перших клієнтів (відгук + показ у портфоліо).';
+    if (msg && !msg.value.includes('15%')) msg.value = msg.value ? `${note}\n${msg.value}` : note;
+  }));
+
   // Shared helpers for page scripts (calculator etc.)
   window.MBO = { sendLead, track, validate, sourceLines, clearInvalid, usd, onRate: (fn) => rateListeners.push(fn) };
 })();
