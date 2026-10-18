@@ -107,14 +107,15 @@
     });
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+        // Tall blocks (a long article on a phone) never reach 15% visible, so also accept a fifth of the screen
+        if (!entry.isIntersecting || (entry.intersectionRatio < 0.15 && entry.intersectionRect.height < innerHeight * 0.2)) return;
         targets.get(entry.target).forEach((el) => {
           el.classList.add('is-visible');
           cleanup(el);
         });
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: Array.from({ length: 16 }, (_, i) => i / 100), rootMargin: '0px 0px -60px 0px' });
     targets.forEach((_, target) => io.observe(target));
   } else {
     revealEls.forEach((el) => el.classList.add('is-visible'));

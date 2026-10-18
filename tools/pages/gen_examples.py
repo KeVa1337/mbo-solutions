@@ -89,7 +89,7 @@ DEMOS = [
     },
 ]
 
-DEMO_V = '1'
+DEMO_V = '3'
 
 
 def demo_page(d):

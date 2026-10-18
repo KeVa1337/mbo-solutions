@@ -23,7 +23,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .demo-bar a { color: #fff; }
 .demo-bar p a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-.demo-bar__back { font-weight: 600; white-space: nowrap; }
+.demo-bar__back { display: inline-block; padding: 10px 0; font-weight: 600; white-space: nowrap; }
 .demo-bar__btn { flex-shrink: 0; padding: 7px 16px; border-radius: 999px; font-weight: 700; background: linear-gradient(135deg, #9b5cff, #7c3aed); box-shadow: 0 6px 20px -6px rgba(139,92,246,.8); }
 
 /* Header */
@@ -41,7 +41,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .d-btn:hover { transform: translateY(-2px); }
 .d-btn--sm { min-height: 40px; padding: 0 18px; font-size: 14px; border-radius: 11px; }
 .d-btn--ghost { background: transparent; color: var(--text); border: 1px solid var(--line); box-shadow: none; }
-.d-link { font-weight: 700; color: var(--accent); }
+.d-link { display: inline-block; padding: 8px 0; font-weight: 700; color: var(--accent); }
 
 /* Hero */
 .d-hero { padding: 72px 0 80px; background: radial-gradient(700px 420px at 80% 30%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%); }

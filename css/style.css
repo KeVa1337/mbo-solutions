@@ -648,7 +648,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 
 /* ---------- Service price/term ---------- */
 .service__meta { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
-.service__meta b { color: var(--text); font-size: 16px; }
+.service__meta b { white-space: nowrap; color: var(--text); font-size: 16px; }
 .service__meta span:last-child { color: var(--accent-light); font-weight: 600; }
 
 /* ---------- Pricing ---------- */
@@ -666,8 +666,8 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 }
 .plan__name { font-size: 13px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent-light); }
 .plan__product { margin-top: 8px; font-size: 22px; }
-.plan__price { margin-top: 20px; display: flex; align-items: baseline; gap: 6px; color: var(--muted); }
-.plan__price b { font-size: 42px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.plan__price { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; color: var(--muted); }
+.plan__price b { white-space: nowrap; font-size: clamp(34px, 11vw, 42px); font-weight: 800; letter-spacing: -.02em; color: var(--text); }
 .plan__term { margin-top: 6px; font-size: 15px; font-weight: 600; color: var(--accent-light); }
 .plan__list { margin: 24px 0 28px; display: grid; gap: 12px; flex: 1; }
 .plan__list li { display: flex; gap: 10px; font-size: 15px; }
@@ -736,7 +736,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 /* ---------- Footer contacts ---------- */
 .footer__contacts { display: grid; gap: 2px; text-align: center; font-size: 13px; color: var(--muted); }
 .footer__contacts a:hover { color: var(--accent-light); }
-.footer__phone { font-size: 18px; font-weight: 700; color: var(--text); }
+.footer__phone { display: inline-block; padding: 8px 0; font-size: 18px; font-weight: 700; color: var(--text); }
 
 /* ---------- Proof (speed) ---------- */
 .proof { padding-top: 40px; }
@@ -1028,4 +1028,9 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .quiz__fields { grid-template-columns: 1fr; }
   .quiz__result { padding: 22px 18px; }
   .egg-toast { white-space: normal; width: calc(100% - 32px); text-align: center; border-radius: 18px; }
+}
+
+/* ---------- Comfortable tap targets on touch screens ---------- */
+@media (pointer: coarse) {
+  .footer__contacts span a { display: inline-block; padding: 8px 4px; }
 }
