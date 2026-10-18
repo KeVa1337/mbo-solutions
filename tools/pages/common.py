@@ -59,7 +59,7 @@ def page(path, title, description, body, active=None, extra_head='', scripts='',
   <meta property="og:image" content="https://mbo-solutions.com/assets/img/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <script>document.documentElement.classList.add('js', 'skip-intro');</script>
-  <script src="/js/config.js?v=1"></script>
+  <script src="/js/config.js?v=2"></script>
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
