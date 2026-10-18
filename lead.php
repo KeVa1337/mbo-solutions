@@ -61,14 +61,12 @@ $subject = trim(mb_substr((string) ($in['subject'] ?? 'Заявка з сайт�
 $lines = array_slice(array_map(fn($l) => mb_substr((string) $l, 0, 1500), (array) ($in['lines'] ?? [])), 0, 40);
 if (!array_filter($lines, fn($l) => trim($l) !== '')) out(400, ['ok' => false, 'error' => 'empty']);
 
-// Simple rate limit: max 5 leads per IP per 10 minutes
+// Simple rate limit: max 8 delivered leads per IP per 10 minutes (only successful sends count)
 $ip = $_SERVER['REMOTE_ADDR'] ?? '0';
 $rlFile = sys_get_temp_dir() . '/mbo-lead-' . md5($ip);
 $now = time();
-$hits = array_filter((array) json_decode((string) @file_get_contents($rlFile), true), fn($t) => $t > $now - 600);
-if (count($hits) >= 5) out(429, ['ok' => false, 'error' => 'rate']);
-$hits[] = $now;
-@file_put_contents($rlFile, json_encode(array_values($hits)), LOCK_EX);
+$hits = array_values(array_filter((array) json_decode((string) @file_get_contents($rlFile), true), fn($t) => $t > $now - 600));
+if (count($hits) >= 8) out(429, ['ok' => false, 'error' => 'rate']);
 
 $esc = fn($s) => htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $page = $esc(mb_substr((string) ($in['page'] ?? ''), 0, 300));
@@ -87,4 +85,9 @@ foreach ((array) $cfg['chats'] as $chat) {
     $res = json_decode((string) @file_get_contents($api, false, $ctx), true);
     if (!empty($res['ok'])) $sent++;
 }
-$sent ? out(200, ['ok' => true]) : out(502, ['ok' => false, 'error' => 'telegram']);
+if ($sent) {
+    $hits[] = $now;
+    @file_put_contents($rlFile, json_encode($hits), LOCK_EX);
+    out(200, ['ok' => true]);
+}
+out(502, ['ok' => false, 'error' => 'telegram']);

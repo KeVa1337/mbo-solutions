@@ -388,6 +388,7 @@
       });
       const j = await r.json().catch(() => ({}));
       if (r.ok && j.ok) return 'sent';
+      if (j.error === 'rate') return 'rate';
     } catch (e) { /* network error → fallback */ }
     mailto(subject, lines);
     return 'mail';
@@ -406,8 +407,10 @@
     statusEl.classList.remove('is-error');
     statusEl.textContent = 'Надсилаємо…';
     const how = await sendLead(subject, lines, formEl);
-    track('lead', method);
-    statusEl.textContent = how === 'sent' ? MSG_OK : MSG_MAIL;
+    if (how !== 'rate') track('lead', method);
+    statusEl.textContent = how === 'sent' ? MSG_OK
+      : how === 'rate' ? 'Ви вже надіслали кілька заявок — ми їх отримали й скоро зв’яжемося. Або напишіть нам у Telegram чи Viber.'
+      : MSG_MAIL;
     if (btn) { btn.disabled = false; btn.style.opacity = ''; }
     if (how === 'sent') formEl.querySelectorAll('input:not([type=hidden]):not([name=website]), textarea').forEach((el) => { el.value = ''; });
   };
