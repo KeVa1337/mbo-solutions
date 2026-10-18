@@ -370,10 +370,46 @@
     if (method) track('contact', method);
   });
 
-  /* ---------- Leads → prefilled email (no backend needed) ---------- */
+  /* ---------- Leads → Telegram via /lead.php; email as a fallback ---------- */
   const EMAIL = 'hello@mbo-solutions.com';
-  const sendLead = (subject, lines) => {
+  const MSG_OK = 'Дякуємо! Заявку отримано — зв’яжемося з вами найближчим часом.';
+  const MSG_MAIL = 'Відкриваємо ваш поштовий клієнт — надішліть лист, і ми відповімо.';
+  const mailto = (subject, lines) => {
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+  };
+  // Resolves to 'sent' (delivered to Telegram) or 'mail' (fell back to email)
+  const sendLead = async (subject, lines, formEl) => {
+    const hp = formEl && formEl.querySelector('input[name="website"]');
+    try {
+      const r = await fetch('/lead.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, lines, page: location.pathname, website: hp ? hp.value : '' }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.ok) return 'sent';
+    } catch (e) { /* network error → fallback */ }
+    mailto(subject, lines);
+    return 'mail';
+  };
+  // Hidden honeypot field for bots in every lead form
+  document.querySelectorAll('form[data-lead-form], #quiz-form').forEach((f) => {
+    const hp = document.createElement('input');
+    hp.type = 'text'; hp.name = 'website'; hp.tabIndex = -1; hp.autocomplete = 'off';
+    hp.setAttribute('aria-hidden', 'true');
+    hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0';
+    f.appendChild(hp);
+  });
+  const submitting = async (formEl, statusEl, subject, lines, method) => {
+    const btn = formEl.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.style.opacity = '.6'; }
+    statusEl.classList.remove('is-error');
+    statusEl.textContent = 'Надсилаємо…';
+    const how = await sendLead(subject, lines, formEl);
+    track('lead', method);
+    statusEl.textContent = how === 'sent' ? MSG_OK : MSG_MAIL;
+    if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+    if (how === 'sent') formEl.querySelectorAll('input:not([type=hidden]):not([name=website]), textarea').forEach((el) => { el.value = ''; });
   };
 
   // Marks empty required fields; returns the first invalid one (or null)
@@ -407,15 +443,12 @@
       const data = new FormData(f);
       const subject = (f.dataset.subject || 'Заявка з сайту').replace(/\{(\w+)\}/g, (_, k) => data.get(k) || '');
       const lines = [...f.elements]
-        .filter((el) => el.name && el.value && el.value.trim())
+        .filter((el) => el.name && el.name !== 'website' && el.value && el.value.trim())
         .map((el) => {
           const label = el.dataset.label || (el.labels && el.labels[0] && el.labels[0].textContent.trim()) || el.name;
           return el.tagName === 'TEXTAREA' ? `\n${label}:\n${el.value.trim()}` : `${label}: ${el.value.trim()}`;
         });
-      sendLead(subject, [...lines, ...sourceLines()]);
-      track('lead', f.dataset.leadForm);
-      st.classList.remove('is-error');
-      st.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
+      submitting(f, st, subject, [...lines, ...sourceLines()], f.dataset.leadForm);
     });
     f.addEventListener('input', clearInvalid);
   });
@@ -519,7 +552,7 @@
       }
       const data = new FormData(quizForm);
       const result = recommend();
-      sendLead(`Заявка з квізу: ${result}`, [
+      submitting(quizForm, quizStatus, `Заявка з квізу: ${result}`, [
         `Ім’я: ${data.get('name')}`,
         `Контакт: ${data.get('contact')}`,
         '',
@@ -530,10 +563,7 @@
         '',
         `Рекомендація: ${result}`,
         ...sourceLines(),
-      ]);
-      track('lead', 'quiz');
-      quizStatus.classList.remove('is-error');
-      quizStatus.textContent = 'Дякуємо! Відкриваємо ваш поштовий клієнт для надсилання заявки.';
+      ], 'quiz');
     });
     quizForm.addEventListener('input', clearInvalid);
   }
