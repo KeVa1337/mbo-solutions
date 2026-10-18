@@ -14,6 +14,17 @@
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
+// Real visitor IP even behind Hostinger CDN / Cloudflare / proxies
+function client_ip() {
+    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'] as $h) {
+        if (!empty($_SERVER[$h])) {
+            $ip = trim(explode(',', $_SERVER[$h])[0]);
+            if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
+        }
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '0';
+}
+
 function out($code, $data) { http_response_code($code); echo json_encode($data, JSON_UNESCAPED_UNICODE); exit; }
 
 // Self-check: open /lead.php?check=1 in a browser (never reveals the token)
@@ -24,7 +35,9 @@ if (isset($_GET['check'])) {
     }
     $r = ['lead_php' => 'ok', 'php' => PHP_VERSION, 'config_file' => $found ?: 'НЕ ЗНАЙДЕНО',
           'config_valid' => is_array($cfgC) && !empty($cfgC['token']) && !empty($cfgC['chats']),
-          'allow_url_fopen' => (bool) ini_get('allow_url_fopen')];
+          'allow_url_fopen' => (bool) ini_get('allow_url_fopen'),
+          'proxy_headers' => array_values(array_filter(['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'], fn($h) => !empty($_SERVER[$h]))),
+          'ip_detected' => client_ip() !== ($_SERVER['REMOTE_ADDR'] ?? '') ? 'через CDN-заголовок' : 'REMOTE_ADDR'];
     if ($r['config_valid']) {
         $api = 'https://api.telegram.org/bot' . $cfgC['token'];
         $me = json_decode((string) @file_get_contents($api . '/getMe', false, stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]])), true);
@@ -62,8 +75,8 @@ $lines = array_slice(array_map(fn($l) => mb_substr((string) $l, 0, 1500), (array
 if (!array_filter($lines, fn($l) => trim($l) !== '')) out(400, ['ok' => false, 'error' => 'empty']);
 
 // Simple rate limit: max 8 delivered leads per IP per 10 minutes (only successful sends count)
-$ip = $_SERVER['REMOTE_ADDR'] ?? '0';
-$rlFile = sys_get_temp_dir() . '/mbo-lead-' . md5($ip);
+$ip = client_ip();
+$rlFile = sys_get_temp_dir() . '/mbo-lead2-' . md5($ip);
 $now = time();
 $hits = array_values(array_filter((array) json_decode((string) @file_get_contents($rlFile), true), fn($t) => $t > $now - 600));
 if (count($hits) >= 8) out(429, ['ok' => false, 'error' => 'rate']);
