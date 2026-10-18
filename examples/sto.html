@@ -3,15 +3,171 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Демо: сайт для ніші «СТО» — приклад від MBO Solutions</title>
-  <meta name="description" content="Демо-приклад сайту для ніші «СТО» від MBO Solutions. Назви, ціни та контакти умовні.">
+  <title>Демо: сайт для СТО — приклад від MBO Solutions</title>
+  <meta name="description" content="Демо-приклад сайту для СТО від MBO Solutions: калькулятор вартості ремонту, прайс і запис на вільний час. Назви, ціни та контакти умовні.">
   <meta name="robots" content="noindex, follow">
-  <meta name="theme-color" content="#0e0e10">
-  <meta name="color-scheme" content="dark">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/demo.css?v=3">
-  <style>:root{--bg:#0e0e10;--surface:#18181b;--surface2:#1f1f23;--text:#f4f4f5;--muted:#a1a1aa;--accent:#f97316;--accent2:#ef4444;--ink:#ffffff;--line:rgba(255,255,255,.08)}</style>
+  <meta name="theme-color" content="#ecebe6">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/demo/oswald-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/demo-fonts.css?v=1">
+  <link rel="stylesheet" href="/css/demo.css?v=5">
+  <style>
+    :root { --bg: #ecebe6; --paper: #fff; --ink: #121212; --muted: #5f5e58; --line: #cfcdc5; --or: #ff5b14; --dark: #151515; }
+    body { background: var(--bg); color: var(--ink); }
+    .w { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .oz { font-family: "Oswald", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .01em; line-height: 1.02; }
+    .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border: 2px solid var(--ink); font: 700 15px/1 "Oswald", sans-serif; letter-spacing: .06em; text-transform: uppercase; background: var(--ink); color: #fff; transition: background .2s, color .2s, transform .2s; }
+    .btn:hover { background: var(--or); border-color: var(--or); }
+    .btn--line { background: transparent; color: var(--ink); }
+    .btn--line:hover { color: #fff; }
+    .btn--or { background: var(--or); border-color: var(--or); }
+    .btn--or:hover { background: var(--ink); border-color: var(--ink); }
+
+    /* header */
+    .hd { position: sticky; top: 46px; z-index: 40; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .hd__in { display: flex; align-items: center; gap: 28px; min-height: 68px; }
+    .logo { display: flex; align-items: center; gap: 10px; font: 700 24px/1 "Oswald", sans-serif; letter-spacing: .02em; }
+    .logo i { width: 26px; height: 26px; background: var(--or); clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%); }
+    .logo b { color: var(--or); }
+    .hd nav { display: flex; gap: 26px; margin-left: auto; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .06em; }
+    .hd nav a:hover { color: var(--or); }
+    .hd__tel { font-weight: 700; font-size: 15px; }
+    .hd .btn { min-height: 42px; padding: 0 18px; font-size: 14px; }
+
+    /* hero */
+    .hero { padding: 64px 0 72px; }
+    .hero__in { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center; }
+    .status { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px; padding: 8px 14px; border: 2px solid var(--ink); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; background: var(--paper); }
+    .status i { width: 10px; height: 10px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,.2); animation: blink 1.6s infinite; }
+    @keyframes blink { 50% { opacity: .35; } }
+    .hero h1 { font-size: clamp(46px, 7.4vw, 92px); }
+    .hero h1 span { display: inline-block; padding: 0 12px; margin-left: -4px; color: #fff; background: var(--or); transform: rotate(-1.5deg); }
+    .hero__lead { max-width: 520px; margin: 26px 0 32px; font-size: 18px; color: var(--muted); }
+    .hero__btns { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero__nums { display: flex; gap: 36px; margin-top: 40px; padding-top: 24px; border-top: 2px solid var(--ink); }
+    .hero__nums b { display: block; font: 700 34px/1 "Oswald", sans-serif; }
+    .hero__nums span { font-size: 13px; color: var(--muted); }
+
+    /* work order ticket */
+    .ticket { position: relative; padding: 30px 30px 26px; background: var(--paper); box-shadow: 14px 14px 0 var(--ink); border: 2px solid var(--ink); transform: rotate(1.2deg); }
+    .ticket::before { content: ""; position: absolute; left: -2px; right: -2px; top: -12px; height: 12px; background: radial-gradient(circle at 8px 12px, var(--bg) 6px, transparent 6.5px) 0 0 / 16px 12px repeat-x; }
+    .ticket__top { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 16px; margin-bottom: 14px; border-bottom: 2px dashed var(--line); font-size: 12.5px; color: var(--muted); }
+    .ticket__top b { display: block; font-size: 17px; color: var(--ink); }
+    .ticket li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; font-size: 14px; border-bottom: 1px solid #eee; }
+    .ticket li span:last-child { white-space: nowrap; }
+    .ticket__sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; font-weight: 700; }
+    .ticket__sum b { font: 700 36px/1 "Oswald", sans-serif; }
+    .stamp { position: absolute; right: 18px; top: 16px; padding: 8px 12px; border: 3px solid #16a34a; color: #16a34a; font: 700 15px/1.1 "Oswald", sans-serif; text-transform: uppercase; text-align: center; transform: rotate(-12deg); opacity: .9; background: rgba(255,255,255,.7); }
+    .ticket__note { margin-top: 14px; font-size: 12.5px; color: var(--muted); }
+
+    .hazard { height: 18px; background: repeating-linear-gradient(-45deg, var(--ink) 0 18px, var(--or) 18px 36px); }
+
+    /* estimator */
+    .est { padding: 88px 0; background: var(--dark); color: #f4f4f2; }
+    .est__head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 40px; }
+    .est h2 { font-size: clamp(36px, 5vw, 60px); }
+    .est h2 em { font-style: normal; color: var(--or); }
+    .est__head p { max-width: 380px; color: #a9a8a2; }
+    .est__grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; }
+    .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start; }
+    .chip { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 14px 18px; text-align: left; font-weight: 700; font-size: 15px; background: #1f1f1f; border: 2px solid #2c2c2c; transition: border-color .2s, background .2s; }
+    .chip svg { flex-shrink: 0; width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 1.8; color: var(--or); }
+    .chip:hover { border-color: #555; }
+    .chip[aria-pressed="true"] { background: var(--or); border-color: var(--or); color: #fff; }
+    .chip[aria-pressed="true"] svg { color: #fff; }
+    .bill { display: flex; flex-direction: column; padding: 26px; background: #f4f4f2; color: var(--ink); border: 2px solid var(--or); }
+    .bill h3 { font: 700 20px/1 "Oswald", sans-serif; text-transform: uppercase; margin-bottom: 14px; }
+    .bill ul { flex: 1; min-height: 150px; }
+    .bill li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; font-size: 14px; border-bottom: 1px dashed var(--line); }
+    .bill li span:last-child { white-space: nowrap; }
+    .bill__empty { color: var(--muted); font-size: 14px; }
+    .bill__sum { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 18px 0; }
+    .bill__sum b { font: 700 30px/1 "Oswald", sans-serif; }
+    .bill .btn[disabled] { opacity: .4; pointer-events: none; }
+
+    /* price */
+    .sec { padding: 88px 0; }
+    .sec h2 { font-size: clamp(36px, 5vw, 60px); margin-bottom: 36px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .tab { min-height: 44px; padding: 0 18px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; border: 2px solid var(--ink); background: transparent; }
+    .tab[aria-selected="true"] { background: var(--ink); color: #fff; }
+    .price { width: 100%; border-collapse: collapse; background: var(--paper); border: 2px solid var(--ink); }
+    .price th, .price td { padding: 16px 20px; text-align: left; border-bottom: 1px solid #e6e5e0; }
+    .price th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: #f7f7f4; }
+    .price td:nth-child(2), .price td:nth-child(3), .price th:nth-child(2), .price th:nth-child(3) { text-align: right; white-space: nowrap; }
+    .price td:first-child b { display: block; }
+    .price td:first-child small { color: var(--muted); }
+    .price tr[hidden] { display: none; }
+
+    /* steps */
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); border: 2px solid var(--ink); background: var(--paper); }
+    .step { padding: 28px 24px; border-right: 2px solid var(--ink); }
+    .step:last-child { border-right: 0; }
+    .step b { display: block; font: 700 54px/1 "Oswald", sans-serif; color: var(--or); margin-bottom: 18px; }
+    .step h3 { font: 700 19px/1.15 "Oswald", sans-serif; text-transform: uppercase; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); }
+
+    /* booking */
+    .book { padding: 88px 0; background: var(--or); }
+    .book__in { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .book h2 { font-size: clamp(36px, 5vw, 60px); color: var(--ink); }
+    .book__lead { margin: 16px 0 26px; font-size: 17px; color: #2b1407; }
+    .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .slot { min-height: 56px; font-weight: 700; background: #fff; border: 2px solid var(--ink); }
+    .slot small { display: block; font: 500 12px/1 "Manrope", sans-serif; color: var(--muted); margin-top: 3px; }
+    .slot[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .slot[aria-pressed="true"] small { color: #bbb; }
+    .slot:disabled { opacity: .45; text-decoration: line-through; cursor: not-allowed; }
+    .form { padding: 30px; background: var(--paper); border: 2px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); }
+    .form label { display: block; margin-bottom: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .form input, .form textarea { display: block; width: 100%; margin-top: 6px; padding: 14px 14px; font-size: 16px; text-transform: none; letter-spacing: 0; font-weight: 500; background: #f6f6f3; border: 2px solid var(--line); outline: none; }
+    .form input:focus, .form textarea:focus { border-color: var(--ink); }
+    .form textarea { min-height: 84px; resize: vertical; }
+    .form .btn { width: 100%; }
+    .form__pick { margin-bottom: 14px; padding: 12px 14px; font-size: 14px; background: #fff4ec; border-left: 4px solid var(--or); }
+
+    /* contacts */
+    .ft { padding: 64px 0 32px; background: var(--dark); color: #ddd; }
+    .ft__in { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+    .ft__tel { display: block; margin: 16px 0; font: 700 clamp(30px, 4vw, 44px)/1 "Oswald", sans-serif; color: #fff; }
+    .ft p { color: #a9a8a2; }
+    .map { position: relative; height: 260px; background: #1f1f1f; border: 2px solid #2e2e2e; overflow: hidden; }
+    .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .map__pin { position: absolute; left: 58%; top: 42%; padding: 8px 12px; font-weight: 700; font-size: 13px; color: #fff; background: var(--or); transform: translate(-50%, -100%); }
+    .map__pin::after { content: ""; position: absolute; left: 50%; bottom: -8px; border: 8px solid transparent; border-top-color: var(--or); border-bottom: 0; transform: translateX(-50%); }
+    .ft__copy { margin-top: 44px; padding-top: 20px; border-top: 1px solid #2e2e2e; font-size: 13px; color: #8a8984; }
+    .ft__copy a { color: #fff; text-decoration: underline; }
+
+    @media (max-width: 960px) {
+      .hd nav, .hd__tel { display: none; }
+      .hd .btn { margin-left: auto; }
+      .hero__in, .est__grid, .book__in, .ft__in { grid-template-columns: 1fr; }
+      .ticket { transform: none; margin-right: 14px; }
+      .est__head { flex-direction: column; align-items: start; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .step:nth-child(2) { border-right: 0; }
+      .step:nth-child(-n+2) { border-bottom: 2px solid var(--ink); }
+    }
+    @media (max-width: 600px) {
+      .w { padding: 0 16px; }
+      .hero { padding: 40px 0 56px; }
+      .hero__nums { gap: 22px; }
+      .hero__nums b { font-size: 28px; }
+      .hero__btns .btn { flex: 1 1 100%; }
+      .ticket { padding: 24px 18px 20px; box-shadow: 8px 8px 0 var(--ink); margin-right: 8px; }
+      .stamp { right: 8px; top: 10px; font-size: 12px; padding: 6px 8px; }
+      .ticket__top { padding-right: 96px; }
+      .chips { grid-template-columns: 1fr; }
+      .est, .sec, .book { padding: 64px 0; }
+      .steps { grid-template-columns: 1fr; }
+      .step { border-right: 0 !important; border-bottom: 2px solid var(--ink); }
+      .step:last-child { border-bottom: 0; }
+      .price th:nth-child(2), .price td:nth-child(2) { display: none; }
+      .price th, .price td { padding: 14px 12px; }
+      .form { padding: 22px 16px; box-shadow: 8px 8px 0 var(--ink); }
+    }
+  </style>
 </head>
 <body>
   <div class="demo-bar">
@@ -20,120 +176,197 @@
     <a href="/#contact" class="demo-bar__btn">Хочу такий сайт</a>
   </div>
 
-  <header class="d-head">
-    <div class="d-wrap d-head__in">
-      <a href="#top" class="d-logo">MOTORFIX<small>автосервіс</small></a>
-      <nav class="d-nav" aria-label="Меню демо-сайту"><a href="#services">Послуги</a><a href="#why">Переваги</a><a href="#contacts">Контакти</a></nav>
-      
-      <a href="#book" class="d-btn d-btn--sm">Запис</a>
+  <header class="hd">
+    <div class="w hd__in">
+      <a href="#top" class="logo"><i aria-hidden="true"></i><span>MOTOR<b>FIX</b></span></a>
+      <nav aria-label="Меню"><a href="#estimate">Калькулятор</a><a href="#price">Ціни</a><a href="#how">Як працюємо</a><a href="#contacts">Контакти</a></nav>
+      <a href="tel:+380000000000" class="hd__tel mono">+380 XX XXX XX XX</a>
+      <a href="#book" class="btn btn--or">Записатися</a>
     </div>
   </header>
 
   <main id="top">
-    <section class="d-hero">
-      <div class="d-wrap d-hero__in">
+    <section class="hero">
+      <div class="w hero__in">
         <div>
-          <p class="d-tag">СТО повного циклу</p>
-          <h1>Ремонт авто без сюрпризів <span>у рахунку</span></h1>
-          <p class="d-lead">Діагностика, ТО, ходова, гальма та електрика. Узгоджуємо ціну до початку робіт і показуємо замінені деталі.</p>
-          <div class="d-actions"><a href="#book" class="d-btn">Записатися на ремонт</a><a href="#services" class="d-btn d-btn--ghost">Ціни</a></div>
-          <ul class="d-facts"><li>✓ Діагностика за 30 хв</li><li>✓ Гарантія на роботи</li><li>✓ Запис на зручний час</li></ul>
+          <p class="status"><i aria-hidden="true"></i>Відкрито · сьогодні до 20:00</p>
+          <h1 class="oz">Ремонт авто без <span>сюрпризів</span> у рахунку</h1>
+          <p class="hero__lead">Спочатку діагностика й чесна ціна — потім ремонт. Ціну фіксуємо до початку робіт, а старі деталі повертаємо вам.</p>
+          <div class="hero__btns">
+            <a href="#estimate" class="btn">Порахувати ремонт</a>
+            <a href="#book" class="btn btn--line">Вільний час на завтра</a>
+          </div>
+          <div class="hero__nums">
+            <div><b>30 хв</b><span>діагностика</span></div>
+            <div><b>6 міс</b><span>гарантія на роботи</span></div>
+            <div><b>8 постів</b><span>без черг</span></div>
+          </div>
         </div>
-        <div class="d-visual" aria-hidden="true">
-          <div class="d-visual__card"><span>🔧</span></div>
-          <div class="d-badge d-badge--1">✅ Ціна до ремонту</div>
-          <div class="d-badge d-badge--2">🔩 Старі деталі — вам</div>
-        </div>
-      </div>
-    </section>
 
-    <section class="d-section" id="services">
-      <div class="d-wrap">
-        <h2>Послуги та ціни</h2>
-        <div class="d-grid">
-          <article class="d-card">
-            <h3>Комп’ютерна діагностика</h3><p>Зчитуємо помилки та пояснюємо</p>
-            <div class="d-card__foot"><b>від 400 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
-          <article class="d-card">
-            <h3>Заміна мастила</h3><p>Мастило та фільтр</p>
-            <div class="d-card__foot"><b>від 300 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
-          <article class="d-card">
-            <h3>Ремонт ходової</h3><p>Сайлентблоки, кульові, амортизатори</p>
-            <div class="d-card__foot"><b>від 800 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
-          <article class="d-card">
-            <h3>Гальмівна система</h3><p>Колодки, диски, рідина</p>
-            <div class="d-card__foot"><b>від 500 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
-          <article class="d-card">
-            <h3>Розвал-сходження</h3><p>3D-стенд</p>
-            <div class="d-card__foot"><b>від 600 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
-          <article class="d-card">
-            <h3>Автоелектрика</h3><p>Пошук і ремонт несправностей</p>
-            <div class="d-card__foot"><b>від 500 грн</b><a href="#book" class="d-link">Записатися →</a></div>
-          </article>
+        <div class="ticket mono" aria-label="Приклад наряд-замовлення">
+          <div class="ticket__top"><div><b>Наряд № 0427</b>Skoda Octavia · 2017 · прийнято 09:40</div></div>
+          <ul>
+            <li><span>Діагностика ходової</span><span>400 ₴</span></li>
+            <li><span>Сайлентблоки важеля ×2</span><span>1 200 ₴</span></li>
+            <li><span>Заміна стійок стабілізатора</span><span>500 ₴</span></li>
+            <li><span>Розвал-сходження 3D</span><span>600 ₴</span></li>
+          </ul>
+          <div class="ticket__sum"><span>Разом до сплати</span><b>2 700 ₴</b></div>
+          <p class="ticket__note">Без доплат «по ходу» — додаткові роботи лише після вашої згоди.</p>
+          <div class="stamp" aria-hidden="true">Ціна<br>зафіксована</div>
         </div>
       </div>
     </section>
 
-    <section class="d-section d-section--alt" id="why">
-      <div class="d-wrap">
-        <h2>Чому обирають нас</h2>
-        <ul class="d-why"><li><span>🧾</span><b>Ціна фіксується</b><p>Називаємо вартість до ремонту — без «а ще ось тут»</p></li>
-<li><span>🔍</span><b>Показуємо деталі</b><p>Старі запчастини віддаємо вам</p></li>
-<li><span>📦</span><b>Ваші запчастини</b><p>Можна привезти свої — встановимо</p></li>
-<li><span>☕</span><b>Зона очікування</b><p>Кава та Wi-Fi, поки ми працюємо</p></li></ul>
+    <div class="hazard" aria-hidden="true"></div>
+
+    <section class="est" id="estimate">
+      <div class="w">
+        <div class="est__head">
+          <h2 class="oz">Що турбує <em>ваше авто?</em></h2>
+          <p>Оберіть симптоми — покажемо, що зазвичай потрібно зробити і скільки це коштує. Точну ціну скажемо після діагностики.</p>
+        </div>
+        <div class="est__grid">
+          <div class="chips" role="group" aria-label="Симптоми">
+            <button type="button" class="chip" aria-pressed="false" data-works="Діагностика ходової|400|400;Заміна сайлентблоків|900|1800;Стійки стабілізатора|400|700"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h3l2-5 4 10 2-5h7"/></svg>Стукіт у підвісці</button>
+            <button type="button" class="chip" aria-pressed="false" data-works="Огляд гальмівної системи|200|200;Заміна колодок (вісь)|500|700;Проточка або заміна дисків|900|1600"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M20 12h-3"/></svg>Скрипить або тягне при гальмуванні</button>
+            <button type="button" class="chip" aria-pressed="false" data-works="Комп’ютерна діагностика|400|400;Заміна датчика або свічок|500|1500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14l-1.5-7h-11z"/><path d="M8 10V7h8v3M10 13h4"/></svg>Горить Check Engine</button>
+            <button type="button" class="chip" aria-pressed="false" data-works="Заміна мастила й фільтра|300|300;Повітряний і салонний фільтри|200|300"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/></svg>Пора міняти мастило</button>
+            <button type="button" class="chip" aria-pressed="false" data-works="Розвал-сходження 3D|600|600;Перевірка рульових тяг|300|300"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 4h6M14 20h6"/></svg>Тягне вбік на прямій</button>
+            <button type="button" class="chip" aria-pressed="false" data-works="Діагностика електрики|400|400;Заміна або зарядка АКБ|300|3200"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg>Погано заводиться</button>
+          </div>
+
+          <div class="bill mono" aria-live="polite">
+            <h3>Орієнтовний кошторис</h3>
+            <ul id="bill-list"><li class="bill__empty">Оберіть хоча б один симптом ←</li></ul>
+            <div class="bill__sum"><span>Разом</span><b id="bill-sum">—</b></div>
+            <a href="#book" class="btn btn--or" id="bill-go" aria-disabled="true">Записатися з цим списком</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="d-section" id="book">
-      <div class="d-wrap d-book">
+    <section class="sec" id="price">
+      <div class="w">
+        <h2 class="oz">Прайс без дрібного шрифту</h2>
+        <div class="tabs" role="tablist" aria-label="Категорії послуг">
+          <button type="button" class="tab" role="tab" aria-selected="true" data-cat="all">Усе</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-cat="to">ТО</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-cat="chassis">Ходова й гальма</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-cat="el">Електрика</button>
+        </div>
+        <table class="price">
+          <thead><tr><th>Послуга</th><th>Час</th><th>Ціна</th></tr></thead>
+          <tbody class="mono">
+            <tr data-cat="to"><td><b>Заміна мастила й фільтра</b><small>Ваше мастило або наше</small></td><td>30 хв</td><td>від 300 ₴</td></tr>
+            <tr data-cat="to"><td><b>Планове ТО</b><small>Фільтри, рідини, огляд 40 пунктів</small></td><td>2 год</td><td>від 1 200 ₴</td></tr>
+            <tr data-cat="chassis"><td><b>Діагностика ходової</b><small>На підйомнику, з фото</small></td><td>30 хв</td><td>400 ₴</td></tr>
+            <tr data-cat="chassis"><td><b>Заміна гальмівних колодок</b><small>Одна вісь</small></td><td>40 хв</td><td>від 500 ₴</td></tr>
+            <tr data-cat="chassis"><td><b>Розвал-сходження</b><small>3D-стенд, роздруківка до/після</small></td><td>40 хв</td><td>600 ₴</td></tr>
+            <tr data-cat="el"><td><b>Комп’ютерна діагностика</b><small>Зчитування й розшифровка помилок</small></td><td>30 хв</td><td>400 ₴</td></tr>
+            <tr data-cat="el"><td><b>Пошук несправності електрики</b><small>Година роботи автоелектрика</small></td><td>1 год</td><td>від 500 ₴</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="how" style="padding-top:0">
+      <div class="w">
+        <h2 class="oz">Як проходить ремонт</h2>
+        <ol class="steps">
+          <li class="step"><b>01</b><h3>Приймаємо авто</h3><p>Записуєте пробіг і скарги разом із майстром — нічого не губиться.</p></li>
+          <li class="step"><b>02</b><h3>Діагностика й ціна</h3><p>Надсилаємо фото проблеми й кошторис у Viber.</p></li>
+          <li class="step"><b>03</b><h3>Ремонт після «так»</h3><p>Нічого не робимо без вашої згоди. Ціна не змінюється.</p></li>
+          <li class="step"><b>04</b><h3>Старі деталі — вам</h3><p>Показуємо, що замінили, і даємо гарантію 6 місяців.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="book" id="book">
+      <div class="w book__in">
         <div>
-          <h2>Запис онлайн</h2>
-          <p class="d-lead">Оберіть послугу й зручний день — ми передзвонимо та підтвердимо час.</p>
+          <h2 class="oz">Вільний час на завтра</h2>
+          <p class="book__lead">Оберіть віконце — ми передзвонимо за 10 хвилин і підтвердимо запис.</p>
+          <div class="slots" role="group" aria-label="Вільний час">
+            <button type="button" class="slot" aria-pressed="false">08:30<small>пост 2</small></button>
+            <button type="button" class="slot" disabled>09:00<small>зайнято</small></button>
+            <button type="button" class="slot" aria-pressed="false">10:30<small>пост 1</small></button>
+            <button type="button" class="slot" aria-pressed="false">12:00<small>пост 4</small></button>
+            <button type="button" class="slot" disabled>14:00<small>зайнято</small></button>
+            <button type="button" class="slot" aria-pressed="false">16:30<small>пост 3</small></button>
+          </div>
         </div>
-        <form class="d-form" data-demo-form>
-          <input type="text" placeholder="Ваше ім’я" aria-label="Ваше ім’я">
-          <input type="tel" placeholder="Телефон" aria-label="Телефон">
-          <select aria-label="Послуга"><option>Комп’ютерна діагностика</option><option>Заміна мастила</option><option>Ремонт ходової</option><option>Гальмівна система</option><option>Розвал-сходження</option><option>Автоелектрика</option></select>
-          <input type="date" aria-label="Бажана дата">
-          <button type="submit" class="d-btn">Записатися</button>
-          <p class="d-form__msg" role="status"></p>
+        <form class="form" data-demo-form>
+          <p class="form__pick" id="pick">Час не обрано — підберемо найближчий вільний.</p>
+          <label>Ім’я<input type="text" autocomplete="name" placeholder="Як до вас звертатися"></label>
+          <label>Телефон<input type="tel" autocomplete="tel" placeholder="+380"></label>
+          <label>Авто<input type="text" placeholder="Марка, модель, рік"></label>
+          <label>Що зробити<textarea id="book-works" placeholder="Наприклад: стукіт спереду справа"></textarea></label>
+          <button type="submit" class="btn btn--or">Записатися</button>
         </form>
-      </div>
-    </section>
-
-    <section class="d-section d-section--alt" id="contacts">
-      <div class="d-wrap d-contacts">
-        <div>
-          <h2>Контакти</h2>
-          <p>📍 м. Ваше місто, вул. Прикладна, 1</p>
-          <p>🕘 Пн–Сб 9:00–19:00</p>
-          <p>📞 +380 XX XXX XX XX · Viber · Telegram</p>
-        </div>
-        <div class="d-map" aria-hidden="true"><span>📍</span></div>
       </div>
     </section>
   </main>
 
-  <footer class="d-foot">
-    <div class="d-wrap">© MOTORFIX — демо-сайт. Створено <a href="/">MBO Solutions</a> як приклад для ніші «СТО».</div>
+  <footer class="ft" id="contacts">
+    <div class="w">
+      <div class="ft__in">
+        <div>
+          <a href="#top" class="logo" style="color:#fff"><i aria-hidden="true"></i><span>MOTOR<b>FIX</b></span></a>
+          <a href="tel:+380000000000" class="ft__tel">+380 XX XXX XX XX</a>
+          <p>м. Ваше місто, вул. Прикладна, 1<br>Пн–Сб 8:00–20:00 · Viber · Telegram</p>
+        </div>
+        <div class="map" aria-hidden="true">
+          <svg viewBox="0 0 600 260" preserveAspectRatio="none"><g stroke="#2f2f2f" stroke-width="14" fill="none"><path d="M-10 70 L610 110"/><path d="M-10 200 L610 180"/><path d="M120 -10 L180 270"/><path d="M420 -10 L380 270"/></g><g stroke="#3a3a3a" stroke-width="5" fill="none"><path d="M260 -10 L280 270"/><path d="M-10 140 L610 140"/><path d="M520 -10 L560 270"/></g><path d="M-10 70 L610 110" stroke="#ff5b14" stroke-width="3" stroke-dasharray="10 10" fill="none" opacity=".6"/></svg>
+          <span class="map__pin">MOTORFIX</span>
+        </div>
+      </div>
+      <p class="ft__copy">© MOTORFIX — демо-сайт. Створено <a href="/">MBO Solutions</a> як приклад для ніші «СТО».</p>
+    </div>
   </footer>
 
+  <script src="/js/demo.js?v=1" defer></script>
   <script>
-    document.querySelectorAll('[data-demo-form]').forEach(function (f) {
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        f.querySelector('.d-form__msg').textContent = 'Це демо-форма. На вашому сайті заявка одразу прийде вам у Telegram, Viber або на пошту.';
+    (function () {
+      var fmt = function (n) { return n.toLocaleString('uk-UA').replace(/ /g, ' '); };
+      var list = document.getElementById('bill-list'), sum = document.getElementById('bill-sum'), go = document.getElementById('bill-go');
+      var chips = document.querySelectorAll('.chip');
+      function render() {
+        var rows = [], lo = 0, hi = 0, seen = {};
+        chips.forEach(function (c) {
+          if (c.getAttribute('aria-pressed') !== 'true') return;
+          c.dataset.works.split(';').forEach(function (w) {
+            var p = w.split('|'); if (seen[p[0]]) return; seen[p[0]] = 1;
+            lo += +p[1]; hi += +p[2];
+            rows.push('<li><span>' + p[0] + '</span><span>' + (p[1] === p[2] ? fmt(+p[1]) : fmt(+p[1]) + '–' + fmt(+p[2])) + ' ₴</span></li>');
+          });
+        });
+        list.innerHTML = rows.length ? rows.join('') : '<li class="bill__empty">Оберіть хоча б один симптом ←</li>';
+        sum.textContent = rows.length ? (lo === hi ? fmt(lo) : fmt(lo) + '–' + fmt(hi)) + ' ₴' : '—';
+        go.setAttribute('aria-disabled', rows.length ? 'false' : 'true');
+        go.dataset.works = Object.keys(seen).join(', ');
+      }
+      chips.forEach(function (c) { c.addEventListener('click', function () { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); render(); }); });
+      go.addEventListener('click', function (e) {
+        if (go.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+        document.getElementById('book-works').value = go.dataset.works;
       });
-    });
-    var count = 0, out = document.getElementById('cart-count');
-    document.querySelectorAll('[data-add]').forEach(function (b) {
-      b.addEventListener('click', function () { out.textContent = ++count; b.textContent = 'Додано ✓'; });
-    });
+
+      document.querySelectorAll('.tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          document.querySelectorAll('.tab').forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+          document.querySelectorAll('.price tbody tr').forEach(function (r) { r.hidden = t.dataset.cat !== 'all' && r.dataset.cat !== t.dataset.cat; });
+        });
+      });
+
+      var pick = document.getElementById('pick');
+      document.querySelectorAll('.slot:not(:disabled)').forEach(function (s) {
+        s.addEventListener('click', function () {
+          document.querySelectorAll('.slot').forEach(function (x) { if (!x.disabled) x.setAttribute('aria-pressed', x === s ? 'true' : 'false'); });
+          pick.textContent = 'Ваш час: завтра о ' + s.firstChild.textContent + ' (' + s.querySelector('small').textContent + ')';
+        });
+      });
+    })();
   </script>
 </body>
 </html>

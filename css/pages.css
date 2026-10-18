@@ -128,19 +128,14 @@
 .examples { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .example { overflow: hidden; display: flex; flex-direction: column; border-radius: 24px; }
 .example:hover { transform: translateY(-6px); border-color: rgba(167, 139, 250, .3); box-shadow: 0 30px 60px -28px rgba(139, 92, 246, .55); }
-.example__preview { margin: 14px 14px 0; border-radius: 16px; overflow: hidden; background: var(--pbg); color: var(--ptext); border: 1px solid rgba(255,255,255,.08); }
-.example__bar { display: flex; gap: 6px; padding: 10px 12px; background: var(--psurf); }
-.example__bar i { width: 9px; height: 9px; border-radius: 50%; background: rgba(128, 128, 128, .45); }
-.example__mock { position: relative; padding: 22px 22px 26px; min-height: 200px; background: radial-gradient(260px 160px at 85% 30%, color-mix(in srgb, var(--pacc) 30%, transparent), transparent 70%); }
-.example__logo { display: block; font-size: 13px; letter-spacing: .12em; }
-.example__h { margin-top: 20px; max-width: 70%; font-size: 21px; font-weight: 800; line-height: 1.15; }
-.example__btn { display: inline-block; margin-top: 16px; padding: 7px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; color: var(--pbg); background: linear-gradient(135deg, var(--pacc), var(--pacc2)); }
-.example__emoji { position: absolute; right: 18px; bottom: 14px; font-size: 64px; transition: transform .5s var(--ease); }
-.example:hover .example__emoji { transform: rotate(-8deg) scale(1.1); }
+.example__preview { margin: 14px 14px 0; border-radius: 16px; overflow: hidden; aspect-ratio: 3 / 2; background: var(--surface); }
+.example__preview img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.example:hover .example__preview img { transform: scale(1.04); }
 .example__body { padding: 20px 24px 24px; }
 .example__niche { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-light); }
 .example h2 { margin: 6px 0 10px; font-size: 22px; }
 .example h2 small { font-size: 14px; font-weight: 500; color: var(--muted); }
+.example__feat { margin-bottom: 14px; font-size: 15px; color: var(--muted); }
 .examples__note { margin-top: 24px; font-size: 14px; color: var(--muted); text-align: center; }
 .examples__note a { text-decoration: underline; text-underline-offset: 3px; }
 

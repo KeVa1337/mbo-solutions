@@ -3,15 +3,156 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Демо: сайт для ніші «Магазин шин і дисків» — приклад від MBO Solutions</title>
-  <meta name="description" content="Демо-приклад сайту для ніші «Магазин шин і дисків» від MBO Solutions. Назви, ціни та контакти умовні.">
+  <title>Демо: інтернет-магазин шин і дисків — приклад від MBO Solutions</title>
+  <meta name="description" content="Демо-приклад інтернет-магазину шин від MBO Solutions: підбір за розміром, фільтри за сезоном, кошик і шиномонтаж. Назви, ціни та контакти умовні.">
   <meta name="robots" content="noindex, follow">
-  <meta name="theme-color" content="#0b0b0b">
-  <meta name="color-scheme" content="dark">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/demo.css?v=3">
-  <style>:root{--bg:#0b0b0b;--surface:#161616;--surface2:#1d1d1d;--text:#fafafa;--muted:#a3a3a3;--accent:#facc15;--accent2:#f59e0b;--ink:#111111;--line:rgba(255,255,255,.08)}</style>
+  <meta name="theme-color" content="#0d0d0d">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/demo/exo-2-cyrillic-800-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/demo-fonts.css?v=1">
+  <link rel="stylesheet" href="/css/demo.css?v=5">
+  <style>
+    :root { --bg: #0d0d0d; --s1: #161616; --s2: #1e1e1e; --text: #f5f5f5; --muted: #9b9b9b; --y: #ffd400; --line: rgba(255,255,255,.09); }
+    body { background: var(--bg); color: var(--text); }
+    .w { max-width: 1220px; margin: 0 auto; padding: 0 24px; }
+    .ex { font-family: "Exo 2", "Manrope", sans-serif; font-weight: 800; font-style: italic; letter-spacing: -.01em; line-height: 1; text-transform: uppercase; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: 10px; font-weight: 800; font-size: 15px; border: 0; background: var(--y); color: #111; transition: transform .2s, box-shadow .2s; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -10px rgba(255,212,0,.8); }
+    .btn--dark { background: var(--s2); color: var(--text); border: 1px solid var(--line); }
+
+    .hd { position: sticky; top: 46px; z-index: 40; background: rgba(13,13,13,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    .hd__in { display: flex; align-items: center; gap: 22px; min-height: 70px; }
+    .logo { font: italic 800 26px/1 "Exo 2", sans-serif; letter-spacing: -.02em; }
+    .logo b { color: var(--y); }
+    .search { flex: 1; max-width: 420px; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 10px; color: var(--muted); font-size: 14px; background: var(--s1); border: 1px solid var(--line); }
+    .search svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .hd__tel { margin-left: auto; font-weight: 800; font-size: 15px; }
+    .cart-btn { position: relative; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: var(--s2); border: 1px solid var(--line); }
+    .cart-btn svg { width: 22px; height: 22px; stroke: var(--text); fill: none; stroke-width: 1.8; }
+    .cart-btn b { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; font-size: 12px; line-height: 22px; text-align: center; color: #111; background: var(--y); transform: scale(0); transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+    .cart-btn b.is-on { transform: scale(1); }
+
+    /* hero */
+    .hero { position: relative; padding: 56px 0 70px; overflow: hidden; }
+    .hero::before { content: ""; position: absolute; right: -10%; top: -20%; width: 70%; height: 140%; background: radial-gradient(closest-side, rgba(255,212,0,.13), transparent 70%); }
+    .hero__in { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+    .hero h1 { font-size: clamp(42px, 6vw, 78px); }
+    .hero h1 span { color: var(--y); }
+    .hero__lead { max-width: 500px; margin: 20px 0 28px; color: var(--muted); font-size: 17px; }
+    .picker { padding: 22px; border-radius: 18px; background: var(--s1); border: 1px solid var(--line); box-shadow: 0 30px 70px -40px #000; }
+    .picker__seasons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin-bottom: 14px; border-radius: 12px; background: var(--bg); }
+    .picker__seasons button { min-height: 42px; border: 0; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--muted); background: none; }
+    .picker__seasons button[aria-pressed="true"] { color: #111; background: var(--y); }
+    .picker__sizes { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 10px; align-items: end; }
+    .picker label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .picker select { display: block; width: 100%; min-height: 52px; margin-top: 6px; padding: 0 12px; border-radius: 10px; font-size: 17px; font-weight: 800; background: var(--s2); border: 1px solid var(--line); outline: none; }
+    .picker select:focus { border-color: var(--y); }
+    .picker__hint { margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .tire { position: relative; justify-self: center; width: min(100%, 470px); }
+    .tire svg { width: 100%; height: auto; overflow: visible; }
+    .tire__rot { transform-origin: 250px 250px; animation: roll 40s linear infinite; }
+    @keyframes roll { to { transform: rotate(360deg); } }
+    .tire__chip { position: absolute; right: 0; bottom: 8%; padding: 12px 16px; border-radius: 14px; background: var(--y); color: #111; font-weight: 800; box-shadow: 0 20px 40px -16px rgba(255,212,0,.6); }
+    .tire__chip small { display: block; font-size: 12px; font-weight: 700; opacity: .7; }
+
+    .perks { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); }
+    .perk { display: flex; gap: 14px; align-items: center; padding: 22px 20px; border-right: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+    .perk:last-child { border-right: 0; }
+    .perk b { display: block; font-size: 15px; color: var(--text); }
+    .perk svg { flex-shrink: 0; width: 30px; height: 30px; stroke: var(--y); fill: none; stroke-width: 1.7; }
+
+    /* catalog */
+    .cat { padding: 80px 0; }
+    .cat__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .cat h2 { font-size: clamp(32px, 4vw, 48px); }
+    .cat h2 small { display: block; margin-top: 8px; font: 600 15px/1.4 "Manrope", sans-serif; text-transform: none; color: var(--muted); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tabs button { min-height: 42px; padding: 0 16px; border-radius: 10px; font-weight: 700; font-size: 14px; color: var(--muted); background: var(--s1); border: 1px solid var(--line); }
+    .tabs button[aria-pressed="true"] { color: #111; background: var(--text); border-color: var(--text); }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card { position: relative; display: flex; flex-direction: column; padding: 16px; border-radius: 16px; background: var(--s1); border: 1px solid var(--line); transition: border-color .2s, transform .2s; }
+    .card:hover { border-color: rgba(255,212,0,.45); transform: translateY(-3px); }
+    .card__img { display: grid; place-items: center; aspect-ratio: 1; margin-bottom: 14px; border-radius: 12px; background: radial-gradient(circle at 50% 40%, #2a2a2a, #121212 70%); }
+    .card__img svg { width: 78%; }
+    .card__fit { position: absolute; top: 24px; left: 24px; padding: 4px 9px; border-radius: 6px; font-size: 11px; font-weight: 800; color: #111; background: var(--y); }
+    .card__season { position: absolute; top: 24px; right: 24px; font-size: 18px; }
+    .card h3 { font-size: 16px; line-height: 1.25; }
+    .card__size { font-size: 13px; color: var(--muted); margin: 4px 0 10px; }
+    .eu { display: flex; gap: 6px; margin-bottom: 12px; }
+    .eu span { display: flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 6px; font-size: 11.5px; font-weight: 800; background: var(--s2); }
+    .eu i { width: 8px; height: 8px; border-radius: 2px; }
+    .card__stock { font-size: 12.5px; color: #4ade80; margin-bottom: 10px; }
+    .card__price { margin-top: auto; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .card__price b { font: italic 800 26px/1 "Exo 2", sans-serif; }
+    .card__price small { color: var(--muted); font-size: 12.5px; }
+    .card .btn { width: 100%; min-height: 46px; margin-top: 12px; font-size: 14px; }
+    .card .btn.is-added { background: #22c55e; }
+    .empty { grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 16px; }
+
+    /* services */
+    .svc { padding: 0 0 80px; }
+    .svc__grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 16px; }
+    .svc__item { padding: 28px; border-radius: 18px; background: var(--s1); border: 1px solid var(--line); }
+    .svc__item--y { color: #111; background: var(--y); border: 0; }
+    .svc__item.svc__item--y p { color: #3b3200; }
+    .svc__item b { display: block; font: italic 800 40px/1 "Exo 2", sans-serif; margin-bottom: 14px; }
+    .svc__item h3 { font-size: 19px; margin-bottom: 6px; }
+    .svc__item p { color: var(--muted); font-size: 14.5px; }
+
+    .ft { padding: 50px 0 36px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+    .ft__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+    .ft a:not(.logo) { color: var(--text); }
+    .ft__copy { margin-top: 24px; font-size: 13px; }
+    .ft__copy a { text-decoration: underline; }
+
+    /* cart drawer */
+    .scrim { position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.55); opacity: 0; pointer-events: none; transition: opacity .3s; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 81; display: flex; flex-direction: column; width: min(420px, 100%); padding: 24px; background: var(--s1); border-left: 1px solid var(--line); transform: translateX(100%); visibility: hidden; transition: transform .4s cubic-bezier(.2,.8,.2,1), visibility 0s .4s; }
+    .cart-open .scrim { opacity: 1; pointer-events: auto; }
+    .cart-open .drawer { transform: none; visibility: visible; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+    .drawer__hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .drawer__hd h2 { font-size: 28px; }
+    .drawer__x { width: 44px; height: 44px; border-radius: 10px; font-size: 22px; background: var(--s2); border: 1px solid var(--line); }
+    .drawer ul { flex: 1; overflow: auto; }
+    .drawer li { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .drawer li span { color: var(--muted); }
+    .qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .qty button { width: 32px; height: 32px; border-radius: 8px; background: var(--s2); border: 1px solid var(--line); font-weight: 800; }
+    .drawer__sum { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; font-weight: 700; }
+    .drawer__sum b { font: italic 800 30px/1 "Exo 2", sans-serif; color: var(--y); }
+    .drawer__note { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+    @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 960px) {
+      .search, .hd__tel { display: none; }
+      .cart-btn { margin-left: auto; }
+      .hero__in { grid-template-columns: 1fr; }
+      .tire { width: min(80%, 380px); order: -1; }
+      .perks { grid-template-columns: 1fr 1fr; }
+      .perk:nth-child(2) { border-right: 0; }
+      .perk:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .svc__grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .w { padding: 0 16px; }
+      .hero { padding: 28px 0 50px; }
+      .picker { padding: 16px; }
+      .picker__sizes { grid-template-columns: repeat(3, 1fr); }
+      .picker__sizes .btn { grid-column: 1 / -1; }
+      .tire__chip { padding: 9px 12px; font-size: 14px; }
+      .perk { padding: 16px 12px; font-size: 12.5px; }
+      .perk svg { width: 24px; height: 24px; }
+      .grid { gap: 10px; }
+      .card { padding: 10px; }
+      .card__fit { top: 16px; left: 16px; font-size: 11px; }
+      .card__season { top: 16px; right: 16px; }
+      .card h3 { font-size: 14px; }
+      .eu span { padding: 3px 5px; font-size: 10.5px; }
+      .card__price b { font-size: 21px; }
+      .cat { padding: 56px 0; }
+    }
+  </style>
 </head>
 <body>
   <div class="demo-bar">
@@ -20,120 +161,221 @@
     <a href="/#contact" class="demo-bar__btn">Хочу такий сайт</a>
   </div>
 
-  <header class="d-head">
-    <div class="d-wrap d-head__in">
-      <a href="#top" class="d-logo">TIREHUB<small>шини та диски</small></a>
-      <nav class="d-nav" aria-label="Меню демо-сайту"><a href="#services">Каталог</a><a href="#why">Переваги</a><a href="#contacts">Контакти</a></nav>
-      <span class="d-cart" aria-live="polite">🛒 <b id="cart-count">0</b></span>
-      <a href="#book" class="d-btn d-btn--sm">Підбір</a>
+  <header class="hd">
+    <div class="w hd__in">
+      <a href="#top" class="logo">TIRE<b>HUB</b></a>
+      <div class="search" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Пошук: Michelin, 205/55 R16…</div>
+      <a href="tel:+380000000000" class="hd__tel">+380 XX XXX XX XX</a>
+      <button type="button" class="cart-btn" id="cart-open" aria-label="Кошик"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg><b id="cart-count">0</b></button>
     </div>
   </header>
 
   <main id="top">
-    <section class="d-hero">
-      <div class="d-wrap d-hero__in">
+    <section class="hero">
+      <div class="w hero__in">
         <div>
-          <p class="d-tag">Інтернет-магазин</p>
-          <h1>Шини та диски <span>з установкою в день покупки</span></h1>
-          <p class="d-lead">Літні, зимові та всесезонні шини. Підберемо за маркою авто, змонтуємо й відбалансуємо — або доставимо по місту.</p>
-          <div class="d-actions"><a href="#book" class="d-btn">Підібрати шини</a><a href="#services" class="d-btn d-btn--ghost">Каталог</a></div>
-          <ul class="d-facts"><li>✓ Підбір за маркою авто</li><li>✓ Оплата онлайн</li><li>✓ Доставка по місту</li></ul>
+          <h1 class="ex">Шини під ваше авто. <span>Установка — сьогодні.</span></h1>
+          <p class="hero__lead">Вкажіть розмір із боковини шини — покажемо, що є в наявності. При купівлі комплекту шиномонтаж безкоштовний.</p>
+          <form class="picker" id="picker">
+            <div class="picker__seasons" role="group" aria-label="Сезон">
+              <button type="button" aria-pressed="true" data-s="summer">☀ Літо</button>
+              <button type="button" aria-pressed="false" data-s="winter">❄ Зима</button>
+              <button type="button" aria-pressed="false" data-s="all">⛅ Всесезон</button>
+            </div>
+            <div class="picker__sizes">
+              <label>Ширина<select id="sw"><option>185</option><option>195</option><option selected>205</option><option>215</option><option>225</option></select></label>
+              <label>Профіль<select id="sp"><option>50</option><option selected>55</option><option>60</option><option>65</option></select></label>
+              <label>Діаметр<select id="sd"><option>R15</option><option selected>R16</option><option>R17</option><option>R18</option></select></label>
+              <button type="submit" class="btn">Показати</button>
+            </div>
+            <p class="picker__hint">Не знаєте розмір? Напишіть марку авто у Viber — підберемо за 5 хвилин.</p>
+          </form>
         </div>
-        <div class="d-visual" aria-hidden="true">
-          <div class="d-visual__card"><span>🛞</span></div>
-          <div class="d-badge d-badge--1">🚚 Доставка</div>
-          <div class="d-badge d-badge--2">💳 Оплата картою</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="d-section" id="services">
-      <div class="d-wrap">
-        <h2>Популярні товари</h2>
-        <div class="d-grid">
-          <article class="d-card">
-            <h3>Літні шини R15</h3><p>195/65 R15, комплект із 4 шт</p>
-            <div class="d-card__foot"><b>від 1 800 грн/шт</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
-          <article class="d-card">
-            <h3>Зимові шини R16</h3><p>205/55 R16, шиповані або фрикційні</p>
-            <div class="d-card__foot"><b>від 2 400 грн/шт</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
-          <article class="d-card">
-            <h3>Всесезонні шини R16</h3><p>215/60 R16</p>
-            <div class="d-card__foot"><b>від 2 100 грн/шт</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
-          <article class="d-card">
-            <h3>Литі диски R16</h3><p>5×112, графіт</p>
-            <div class="d-card__foot"><b>від 3 200 грн/шт</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
-          <article class="d-card">
-            <h3>Шиномонтаж комплекту</h3><p>Монтаж і балансування</p>
-            <div class="d-card__foot"><b>від 600 грн</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
-          <article class="d-card">
-            <h3>Сезонне зберігання</h3><p>Комплект шин або коліс</p>
-            <div class="d-card__foot"><b>від 800 грн/сезон</b><button type="button" class="d-btn d-btn--sm" data-add>У кошик</button></div>
-          </article>
+        <div class="tire" aria-hidden="true">
+          <svg viewBox="0 0 500 500">
+            <defs>
+              <radialGradient id="rubber" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#2b2b2b"/><stop offset="1" stop-color="#0a0a0a"/></radialGradient>
+              <radialGradient id="rim" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#e9e9e9"/><stop offset=".6" stop-color="#8a8a8a"/><stop offset="1" stop-color="#3a3a3a"/></radialGradient>
+              <path id="sidewall" d="M250 250m-176 0a176 176 0 1 1 352 0a176 176 0 1 1-352 0"/>
+            </defs>
+            <g class="tire__rot">
+              <circle cx="250" cy="250" r="240" fill="url(#rubber)"/>
+              <g id="tread" fill="#050505"></g>
+              <circle cx="250" cy="250" r="200" fill="#151515" stroke="#262626" stroke-width="3"/>
+              <text font-family="Exo 2, sans-serif" font-style="italic" font-weight="800" font-size="24" fill="#d8d8d8" letter-spacing="2"><textPath href="#sidewall" id="tire-text">205/55 R16 · SUMMER · TIREHUB · 205/55 R16 · SUMMER · TIREHUB</textPath></text>
+              <circle cx="250" cy="250" r="150" fill="url(#rim)"/>
+              <g fill="#1a1a1a"><path d="M250 120l22 88h-44z"/><path d="M250 120l22 88h-44z" transform="rotate(72 250 250)"/><path d="M250 120l22 88h-44z" transform="rotate(144 250 250)"/><path d="M250 120l22 88h-44z" transform="rotate(216 250 250)"/><path d="M250 120l22 88h-44z" transform="rotate(288 250 250)"/></g>
+              <circle cx="250" cy="250" r="40" fill="#2a2a2a" stroke="#999" stroke-width="3"/>
+              <circle cx="250" cy="250" r="14" fill="#ffd400"/>
+            </g>
+          </svg>
+          <div class="tire__chip"><small>Ваш розмір</small><span id="chip-size">205/55 R16</span></div>
         </div>
       </div>
     </section>
 
-    <section class="d-section d-section--alt" id="why">
-      <div class="d-wrap">
-        <h2>Чому обирають нас</h2>
-        <ul class="d-why"><li><span>🔎</span><b>Підбір за авто</b><p>Вкажіть марку — покажемо, що підходить</p></li>
-<li><span>💳</span><b>Оплата онлайн</b><p>Карткою на сайті або при отриманні</p></li>
-<li><span>🚚</span><b>Доставка або самовивіз</b><p>Сьогодні — по місту</p></li>
-<li><span>🛡</span><b>Гарантія виробника</b><p>Офіційні постачальники</p></li></ul>
+    <div class="w">
+      <div class="perks">
+        <div class="perk"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><div><b>Монтаж 0 ₴</b>при купівлі 4 шин</div></div>
+        <div class="perk"><svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><div><b>Доставка сьогодні</b>по місту — від 4 шт безкоштовно</div></div>
+        <div class="perk"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg><div><b>Оплата частинами</b>до 4 платежів без переплат</div></div>
+        <div class="perk"><svg viewBox="0 0 24 24"><path d="M4 9 12 4l8 5v10H4z"/><path d="M9 19v-6h6v6"/></svg><div><b>Зберігання</b>сезонне — 800 ₴</div></div>
+      </div>
+    </div>
+
+    <section class="cat" id="catalog">
+      <div class="w">
+        <div class="cat__bar">
+          <h2 class="ex">Каталог<small id="cat-sub">Показано шини для 205/55 R16</small></h2>
+          <div class="tabs" role="group" aria-label="Фільтр за сезоном">
+            <button type="button" aria-pressed="true" data-f="any">Усі</button>
+            <button type="button" aria-pressed="false" data-f="summer">Літні</button>
+            <button type="button" aria-pressed="false" data-f="winter">Зимові</button>
+            <button type="button" aria-pressed="false" data-f="all">Всесезонні</button>
+          </div>
+        </div>
+        <div class="grid" id="grid"></div>
       </div>
     </section>
 
-    <section class="d-section" id="book">
-      <div class="d-wrap d-book">
-        <div>
-          <h2>Підберемо шини для вашого авто</h2>
-          <p class="d-lead">Залиште номер — підберемо варіанти під ваш бюджет і передзвонимо.</p>
-        </div>
-        <form class="d-form" data-demo-form>
-          <input type="text" placeholder="Ваше ім’я" aria-label="Ваше ім’я">
-          <input type="tel" placeholder="Телефон" aria-label="Телефон">
-          <select aria-label="Послуга"><option>Літні шини R15</option><option>Зимові шини R16</option><option>Всесезонні шини R16</option><option>Литі диски R16</option><option>Шиномонтаж комплекту</option><option>Сезонне зберігання</option></select>
-          <input type="text" placeholder="Марка та модель авто" aria-label="Марка та модель авто">
-          <button type="submit" class="d-btn">Підібрати</button>
-          <p class="d-form__msg" role="status"></p>
-        </form>
-      </div>
-    </section>
-
-    <section class="d-section d-section--alt" id="contacts">
-      <div class="d-wrap d-contacts">
-        <div>
-          <h2>Контакти</h2>
-          <p>📍 м. Ваше місто, вул. Прикладна, 1</p>
-          <p>🕘 Пн–Сб 9:00–19:00</p>
-          <p>📞 +380 XX XXX XX XX · Viber · Telegram</p>
-        </div>
-        <div class="d-map" aria-hidden="true"><span>📍</span></div>
+    <section class="svc" id="service">
+      <div class="w svc__grid">
+        <div class="svc__item svc__item--y"><b>0 ₴</b><h3>Шиномонтаж із покупкою</h3><p>Купуєте комплект — монтуємо й балансуємо безкоштовно. Запис на конкретний час.</p></div>
+        <div class="svc__item"><b>30 хв</b><h3>Перевзування</h3><p>Комплект із балансуванням — від 600 ₴.</p></div>
+        <div class="svc__item"><b>4 міс</b><h3>Сезонне зберігання</h3><p>Миємо, пакуємо й зберігаємо в сухому складі.</p></div>
       </div>
     </section>
   </main>
 
-  <footer class="d-foot">
-    <div class="d-wrap">© TIREHUB — демо-сайт. Створено <a href="/">MBO Solutions</a> як приклад для ніші «Магазин шин і дисків».</div>
+  <footer class="ft" id="contacts">
+    <div class="w">
+      <div class="ft__in">
+        <a href="#top" class="logo">TIRE<b>HUB</b></a>
+        <p>Магазин і шиномонтаж: м. Ваше місто, вул. Прикладна, 1 · щодня 8:00–20:00</p>
+        <p><a href="tel:+380000000000">+380 XX XXX XX XX</a> · Viber · Telegram</p>
+      </div>
+      <p class="ft__copy">© TIREHUB — демо-сайт. Створено <a href="/">MBO Solutions</a> як приклад для ніші «Магазин шин і дисків». Бренди шин вигадані.</p>
+    </div>
   </footer>
 
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer" aria-label="Кошик" aria-hidden="true">
+    <div class="drawer__hd"><h2 class="ex">Кошик</h2><button type="button" class="drawer__x" id="cart-close" aria-label="Закрити кошик">×</button></div>
+    <ul id="cart-list"></ul>
+    <div class="drawer__sum"><span>Разом</span><b id="cart-sum">0 ₴</b></div>
+    <p class="drawer__note" id="cart-note">Додайте 4 шини — шиномонтаж буде безкоштовним.</p>
+    <button type="button" class="btn" id="checkout">Оформити замовлення</button>
+  </aside>
+
+  <script src="/js/demo.js?v=1" defer></script>
   <script>
-    document.querySelectorAll('[data-demo-form]').forEach(function (f) {
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        f.querySelector('.d-form__msg').textContent = 'Це демо-форма. На вашому сайті заявка одразу прийде вам у Telegram, Viber або на пошту.';
+    (function () {
+      // tread blocks around the tyre
+      var tread = document.getElementById('tread'), html = '';
+      for (var i = 0; i < 48; i++) html += '<rect x="244" y="12" width="13" height="34" rx="3" transform="rotate(' + (i * 7.5) + ' 250 250)"/>';
+      tread.innerHTML = html;
+
+      var P = [
+        { id: 1, n: 'Velta Sport 2', s: 'summer', w: 205, p: 55, d: 'R16', price: 2350, stock: 16, eu: ['B', 'A', '70'] },
+        { id: 2, n: 'Nordex Ice 7', s: 'winter', w: 205, p: 55, d: 'R16', price: 2890, stock: 8, eu: ['C', 'B', '72'] },
+        { id: 3, n: 'Arden All Weather', s: 'all', w: 205, p: 55, d: 'R16', price: 2540, stock: 12, eu: ['C', 'B', '69'] },
+        { id: 4, n: 'Velta Comfort', s: 'summer', w: 195, p: 65, d: 'R15', price: 1790, stock: 24, eu: ['C', 'A', '68'] },
+        { id: 5, n: 'Nordex Snow Grip', s: 'winter', w: 215, p: 60, d: 'R16', price: 3150, stock: 6, eu: ['C', 'C', '71'] },
+        { id: 6, n: 'Kraft Road S', s: 'summer', w: 205, p: 55, d: 'R16', price: 1980, stock: 20, eu: ['C', 'B', '71'] },
+        { id: 7, n: 'Arden 4Season Pro', s: 'all', w: 225, p: 45, d: 'R17', price: 3420, stock: 10, eu: ['B', 'B', '70'] },
+        { id: 8, n: 'Nordex Ice Studs', s: 'winter', w: 205, p: 55, d: 'R16', price: 3260, stock: 4, eu: ['D', 'A', '73'] }
+      ];
+      var ICON = { summer: '☀', winter: '❄', all: '⛅' };
+      var EU = { A: '#16a34a', B: '#65a30d', C: '#ca8a04', D: '#ea580c' };
+      function treadSvg(s) {
+        var g = s === 'winter'
+          ? '<path d="M30 40l10 8-10 8 10 8-10 8 10 8-10 8M70 40l10 8-10 8 10 8-10 8 10 8-10 8M110 40l10 8-10 8 10 8-10 8 10 8-10 8" stroke="#666" stroke-width="3" fill="none"/>'
+          : s === 'all'
+          ? '<path d="M20 50l40 24 40-24M20 80l40 24 40-24M20 110l40 24 40-24" stroke="#666" stroke-width="5" fill="none"/>'
+          : '<path d="M44 30v130M76 30v130M108 30v130" stroke="#555" stroke-width="6"/><path d="M20 60h20M20 100h20M20 140h20M112 50h20M112 90h20M112 130h20" stroke="#555" stroke-width="5"/>';
+        return '<svg viewBox="0 0 150 190"><rect x="10" y="20" width="130" height="150" rx="26" fill="#0a0a0a" stroke="#333" stroke-width="3"/>' + g + '</svg>';
+      }
+      var fmt = function (n) { return n.toLocaleString('uk-UA').replace(/ /g, ' '); };
+      var size = { w: 205, p: 55, d: 'R16' }, filter = 'any', cart = {};
+      var grid = document.getElementById('grid');
+      function sizeStr(o) { return o.w + '/' + o.p + ' ' + o.d; }
+      function render() {
+        var list = P.filter(function (x) { return filter === 'any' || x.s === filter; })
+          .sort(function (a, b) { return (sizeStr(b) === sizeStr(size)) - (sizeStr(a) === sizeStr(size)) || a.price - b.price; });
+        grid.innerHTML = list.length ? list.map(function (x) {
+          var fit = sizeStr(x) === sizeStr(size);
+          return '<article class="card">' + (fit ? '<span class="card__fit">Ваш розмір</span>' : '') + '<span class="card__season" title="' + x.s + '">' + ICON[x.s] + '</span>' +
+            '<div class="card__img">' + treadSvg(x.s) + '</div><h3>' + x.n + '</h3><p class="card__size">' + sizeStr(x) + '</p>' +
+            '<div class="eu" title="Євроетикетка: економія пального, зчеплення на мокрому, шум"><span><i style="background:' + EU[x.eu[0]] + '"></i>' + x.eu[0] + '</span><span><i style="background:' + EU[x.eu[1]] + '"></i>' + x.eu[1] + '</span><span>' + x.eu[2] + ' дБ</span></div>' +
+            '<p class="card__stock">● В наявності ' + x.stock + ' шт</p>' +
+            '<div class="card__price"><b>' + fmt(x.price) + ' ₴</b><small>/ шт · ' + fmt(x.price * 4) + ' ₴ комплект</small></div>' +
+            '<button type="button" class="btn' + (cart[x.id] ? ' is-added' : '') + '" data-add="' + x.id + '">' + (cart[x.id] ? 'У кошику ✓' : 'Додати 4 шт') + '</button></article>';
+        }).join('') : '<p class="empty">Немає в наявності — залиште номер, привеземо за 1–2 дні.</p>';
+        document.getElementById('cat-sub').textContent = 'Спершу — шини розміру ' + sizeStr(size);
+      }
+      function cartRender() {
+        var ids = Object.keys(cart), count = 0, sum = 0, rows = '';
+        ids.forEach(function (id) {
+          var x = P.find(function (p) { return p.id == id; }), q = cart[id];
+          count += q; sum += q * x.price;
+          rows += '<li><div>' + x.n + '<br><span>' + sizeStr(x) + '</span><div class="qty"><button type="button" data-q="' + id + '" data-d="-1" aria-label="Менше">−</button>' + q + ' шт<button type="button" data-q="' + id + '" data-d="1" aria-label="Більше">+</button></div></div><b>' + fmt(q * x.price) + ' ₴</b></li>';
+        });
+        document.getElementById('cart-list').innerHTML = rows || '<li><span>Кошик порожній</span></li>';
+        document.getElementById('cart-sum').textContent = fmt(sum) + ' ₴';
+        document.getElementById('cart-note').textContent = count >= 4 ? 'Шиномонтаж комплекту — безкоштовно ✓' : 'Додайте 4 шини — шиномонтаж буде безкоштовним.';
+        var c = document.getElementById('cart-count'); c.textContent = count; c.classList.toggle('is-on', count > 0);
+      }
+      grid.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-add]'); if (!b) return;
+        cart[b.dataset.add] = (cart[b.dataset.add] || 0) + 4; cartRender(); render();
       });
-    });
-    var count = 0, out = document.getElementById('cart-count');
-    document.querySelectorAll('[data-add]').forEach(function (b) {
-      b.addEventListener('click', function () { out.textContent = ++count; b.textContent = 'Додано ✓'; });
-    });
+      document.getElementById('cart-list').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-q]'); if (!b) return;
+        cart[b.dataset.q] += +b.dataset.d; if (cart[b.dataset.q] <= 0) delete cart[b.dataset.q];
+        cartRender(); render();
+      });
+      document.querySelectorAll('.tabs button').forEach(function (t) {
+        t.addEventListener('click', function () {
+          document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', x === t ? 'true' : 'false'); });
+          filter = t.dataset.f; render();
+        });
+      });
+
+      var season = 'summer', names = { summer: 'SUMMER', winter: 'WINTER', all: 'ALL SEASON' };
+      function tireText() {
+        var s = sizeStr(size) + ' · ' + names[season] + ' · TIREHUB · ';
+        document.getElementById('tire-text').textContent = s + s;
+        document.getElementById('chip-size').textContent = sizeStr(size);
+      }
+      ['sw', 'sp', 'sd'].forEach(function (id) {
+        document.getElementById(id).addEventListener('change', function () {
+          size = { w: +document.getElementById('sw').value, p: +document.getElementById('sp').value, d: document.getElementById('sd').value };
+          tireText();
+        });
+      });
+      document.querySelectorAll('.picker__seasons button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.picker__seasons button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+          season = b.dataset.s; tireText();
+        });
+      });
+      document.getElementById('picker').addEventListener('submit', function (e) {
+        e.preventDefault();
+        filter = season;
+        document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === season ? 'true' : 'false'); });
+        render(); document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      var body = document.body, drawer = document.getElementById('drawer');
+      function open(on) { body.classList.toggle('cart-open', on); drawer.setAttribute('aria-hidden', on ? 'false' : 'true'); if (on) document.getElementById('cart-close').focus(); }
+      document.getElementById('cart-open').addEventListener('click', function () { open(true); });
+      document.getElementById('cart-close').addEventListener('click', function () { open(false); });
+      document.getElementById('scrim').addEventListener('click', function () { open(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') open(false); });
+      document.getElementById('checkout').addEventListener('click', function () { window.demoToast('Це демо. На вашому сайті замовлення прийде вам у Telegram, а клієнт зможе оплатити карткою.'); });
+
+      render(); cartRender();
+    })();
   </script>
 </body>
 </html>

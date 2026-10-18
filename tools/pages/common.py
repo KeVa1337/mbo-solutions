@@ -6,7 +6,7 @@ IDX = open(os.path.join(ROOT, 'index.html')).read()
 
 CSS_V = re.search(r'style\.css\?v=(\d+)', IDX).group(1)
 JS_V = re.search(r'main\.js\?v=(\d+)', IDX).group(1)
-PAGES_V = '4'
+PAGES_V = '5'
 
 def _between(start, end, include_end=True):
     a = IDX.index(start)
