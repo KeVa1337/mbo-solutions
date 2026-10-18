@@ -205,6 +205,10 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 .logo { position: relative; z-index: 120; display: inline-flex; line-height: 0; transition: opacity .3s, filter .4s; }
 .logo__svg { width: 118px; height: auto; aspect-ratio: 166 / 64; overflow: visible; }
+.logo { align-items: center; gap: 10px; }
+.logo__mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; box-shadow: 0 6px 18px -6px rgba(139, 92, 246, .7); transition: transform .4s var(--ease); }
+.logo:hover .logo__mark { transform: rotate(-6deg) scale(1.06); }
+.logo--sm .logo__mark { width: 34px; }
 .logo:hover { filter: drop-shadow(0 0 14px rgba(168, 85, 247, .55)); }
 .logo--sm .logo__svg { width: 104px; }
 
