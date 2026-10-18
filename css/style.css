@@ -608,6 +608,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 .form__status { min-height: 1.4em; font-size: 14px; color: var(--accent-light); text-align: center; }
 .form__status.is-error { color: #f87171; }
+.form__status a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .form__consent { font-size: 12.5px; color: var(--muted); text-align: center; }
 .form__consent a, .footer__copy a { text-decoration: underline; text-underline-offset: 3px; }
 .form__consent a:hover, .footer__copy a:hover { color: var(--accent-light); }

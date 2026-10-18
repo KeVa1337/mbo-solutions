@@ -373,11 +373,7 @@
   /* ---------- Leads → Telegram via /lead.php; email as a fallback ---------- */
   const EMAIL = 'hello@mbo-solutions.com';
   const MSG_OK = 'Дякуємо! Заявку отримано — зв’яжемося з вами найближчим часом.';
-  const MSG_MAIL = 'Відкриваємо ваш поштовий клієнт — надішліть лист, і ми відповімо.';
-  const mailto = (subject, lines) => {
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
-  };
-  // Resolves to 'sent' (delivered to Telegram) or 'mail' (fell back to email)
+  // Resolves to 'sent' (delivered to Telegram), 'rate' (limited) or 'fail:<code>'
   const sendLead = async (subject, lines, formEl) => {
     const hp = formEl && formEl.querySelector('input[name="website"]');
     try {
@@ -389,9 +385,12 @@
       const j = await r.json().catch(() => ({}));
       if (r.ok && j.ok) return 'sent';
       if (j.error === 'rate') return 'rate';
-    } catch (e) { /* network error → fallback */ }
-    mailto(subject, lines);
-    return 'mail';
+      return `fail:${r.status}${j.error ? '-' + j.error : ''}`;
+    } catch (e) { return 'fail:network'; }
+  };
+  const fallbackHtml = (code, subject, lines) => {
+    const mail = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+    return `Не вдалося надіслати заявку. Напишіть нам напряму: <a href="https://t.me/mbo_solutions" target="_blank" rel="noopener">Telegram</a> · <a href="viber://chat?number=%2B380636640606">Viber</a> · <a href="${mail}">Email</a> · <a href="tel:+380636640606">+380 63 664 06 06</a><br><small style="opacity:.6">код: ${code}</small>`;
   };
   // Hidden honeypot field for bots in every lead form
   document.querySelectorAll('form[data-lead-form], #quiz-form').forEach((f) => {
@@ -407,10 +406,10 @@
     statusEl.classList.remove('is-error');
     statusEl.textContent = 'Надсилаємо…';
     const how = await sendLead(subject, lines, formEl);
-    if (how !== 'rate') track('lead', method);
-    statusEl.textContent = how === 'sent' ? MSG_OK
-      : how === 'rate' ? 'Ви вже надіслали кілька заявок — ми їх отримали й скоро зв’яжемося. Або напишіть нам у Telegram чи Viber.'
-      : MSG_MAIL;
+    if (how === 'sent') track('lead', method);
+    if (how === 'sent') statusEl.textContent = MSG_OK;
+    else if (how === 'rate') statusEl.textContent = 'Ви вже надіслали кілька заявок — ми їх отримали й скоро зв’яжемося.';
+    else { statusEl.classList.add('is-error'); statusEl.innerHTML = fallbackHtml(how.slice(5), subject, lines); }
     if (btn) { btn.disabled = false; btn.style.opacity = ''; }
     if (how === 'sent') formEl.querySelectorAll('input:not([type=hidden]):not([name=website]), textarea').forEach((el) => { el.value = ''; });
   };
