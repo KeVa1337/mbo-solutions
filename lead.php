@@ -16,6 +16,27 @@ header('X-Content-Type-Options: nosniff');
 
 function out($code, $data) { http_response_code($code); echo json_encode($data, JSON_UNESCAPED_UNICODE); exit; }
 
+// Self-check: open /lead.php?check=1 in a browser (never reveals the token)
+if (isset($_GET['check'])) {
+    $found = null; $cfgC = null;
+    foreach ([dirname(__DIR__) . '/mbo-telegram.php', __DIR__ . '/telegram-config.php'] as $f) {
+        if (is_file($f)) { $found = basename($f); $cfgC = @include $f; break; }
+    }
+    $r = ['lead_php' => 'ok', 'php' => PHP_VERSION, 'config_file' => $found ?: 'НЕ ЗНАЙДЕНО',
+          'config_valid' => is_array($cfgC) && !empty($cfgC['token']) && !empty($cfgC['chats']),
+          'allow_url_fopen' => (bool) ini_get('allow_url_fopen')];
+    if ($r['config_valid']) {
+        $api = 'https://api.telegram.org/bot' . $cfgC['token'];
+        $me = json_decode((string) @file_get_contents($api . '/getMe', false, stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]])), true);
+        $r['telegram_token'] = !empty($me['ok']) ? 'ok (@' . $me['result']['username'] . ')' : ('помилка: ' . ($me['description'] ?? 'немає зʼєднання з api.telegram.org'));
+        foreach ((array) $cfgC['chats'] as $chat) {
+            $c = json_decode((string) @file_get_contents($api . '/getChat?chat_id=' . urlencode($chat), false, stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]])), true);
+            $r['chat_' . $chat] = !empty($c['ok']) ? 'ok' : ('помилка: ' . ($c['description'] ?? '?'));
+        }
+    }
+    out(200, $r);
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') out(405, ['ok' => false, 'error' => 'method']);
 
 // Only accept requests from our own pages
