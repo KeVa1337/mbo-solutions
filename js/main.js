@@ -715,10 +715,10 @@
   document.addEventListener('visibilitychange', () => {
     if (!tabIcon) return;
     if (document.hidden) {
-      tabIcon.href = '/assets/favicon-away.svg';
+      tabIcon.href = '/assets/favicon-away.svg?v=2';
       document.title = '👋 Повертайтесь — MBO Solutions';
     } else {
-      tabIcon.href = '/assets/favicon.svg';
+      tabIcon.href = '/assets/favicon.svg?v=2';
       document.title = pageTitle;
     }
   });
