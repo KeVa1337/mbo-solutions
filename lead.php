@@ -25,6 +25,31 @@ function client_ip() {
     return $_SERVER['REMOTE_ADDR'] ?? '0';
 }
 
+// Masked IP for diagnostics: 93.170.12.34 -> 93.170.x.x
+function mask_ip($ip) { return preg_replace(['/^(\d+\.\d+)\.\d+\.\d+$/', '/^([0-9a-f]+:[0-9a-f]+):.*$/i'], ['$1.x.x', '$1:…'], trim((string) $ip)); }
+
+// Telegram API call: curl over IPv4 (hosting IPv6 routes to Telegram are often flaky), one retry
+function tg($url, $payload = null) {
+    for ($try = 0; $try < 2; $try++) {
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10, CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4]);
+            if ($payload !== null) curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json']]);
+            $body = curl_exec($ch); curl_close($ch);
+        } else {
+            $opts = ['timeout' => 10, 'ignore_errors' => true];
+            if ($payload !== null) $opts += ['method' => 'POST', 'header' => "Content-Type: application/json\r\n", 'content' => json_encode($payload)];
+            $body = @file_get_contents($url, false, stream_context_create(['http' => $opts]));
+        }
+        $res = json_decode((string) $body, true);
+        if (is_array($res)) return $res;   // Telegram answered (ok or a real API error) — no retry
+        usleep(400000);
+    }
+    return null;
+}
+
 function out($code, $data) { http_response_code($code); echo json_encode($data, JSON_UNESCAPED_UNICODE); exit; }
 
 // Self-check: open /lead.php?check=1 in a browser (never reveals the token)
@@ -37,14 +62,18 @@ if (isset($_GET['check'])) {
           'config_valid' => is_array($cfgC) && !empty($cfgC['token']) && !empty($cfgC['chats']),
           'allow_url_fopen' => (bool) ini_get('allow_url_fopen'),
           'proxy_headers' => array_values(array_filter(['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'], fn($h) => !empty($_SERVER[$h]))),
-          'ip_detected' => client_ip() !== ($_SERVER['REMOTE_ADDR'] ?? '') ? 'через CDN-заголовок' : 'REMOTE_ADDR'];
+          'ip_remote_addr' => mask_ip($_SERVER['REMOTE_ADDR'] ?? ''),
+          'ip_x_real_ip' => mask_ip($_SERVER['HTTP_X_REAL_IP'] ?? ''),
+          'ip_x_forwarded_for' => implode(', ', array_map('mask_ip', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))),
+          'ip_used_for_limit' => mask_ip(client_ip()),
+          'curl' => function_exists('curl_init')];
     if ($r['config_valid']) {
         $api = 'https://api.telegram.org/bot' . $cfgC['token'];
-        $me = json_decode((string) @file_get_contents($api . '/getMe', false, stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]])), true);
+        $me = tg($api . '/getMe');
         $r['telegram_token'] = !empty($me['ok']) ? 'ok (@' . $me['result']['username'] . ')' : ('помилка: ' . ($me['description'] ?? 'немає зʼєднання з api.telegram.org'));
         foreach ((array) $cfgC['chats'] as $chat) {
-            $c = json_decode((string) @file_get_contents($api . '/getChat?chat_id=' . urlencode($chat), false, stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]])), true);
-            $r['chat_' . $chat] = !empty($c['ok']) ? 'ok' : ('помилка: ' . ($c['description'] ?? '?'));
+            $c = tg($api . '/getChat?chat_id=' . urlencode($chat));
+            $r['chat_' . $chat] = !empty($c['ok']) ? 'ok' : ('помилка: ' . ($c['description'] ?? 'немає відповіді від api.telegram.org'));
         }
     }
     out(200, $r);
@@ -90,12 +119,7 @@ $text = "🔔 <b>" . $esc($subject) . "</b>\n\n" . $esc(implode("\n", $lines))
 $api = rtrim($cfg['api'] ?? 'https://api.telegram.org', '/') . '/bot' . $cfg['token'] . '/sendMessage';
 $sent = 0;
 foreach ((array) $cfg['chats'] as $chat) {
-    $ctx = stream_context_create(['http' => [
-        'method' => 'POST', 'timeout' => 8, 'ignore_errors' => true,
-        'header' => "Content-Type: application/json\r\n",
-        'content' => json_encode(['chat_id' => $chat, 'text' => $text, 'parse_mode' => 'HTML', 'disable_web_page_preview' => true]),
-    ]]);
-    $res = json_decode((string) @file_get_contents($api, false, $ctx), true);
+    $res = tg($api, ['chat_id' => $chat, 'text' => $text, 'parse_mode' => 'HTML', 'disable_web_page_preview' => true]);
     if (!empty($res['ok'])) $sent++;
 }
 if ($sent) {
