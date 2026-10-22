@@ -351,8 +351,23 @@
     else window.addEventListener('load', later, { once: true });
   }
 
-  const track = (kind, method) => {
+  // Enhanced conversions: phone / email from the "contact" field (Google hashes it before sending)
+  const userData = (formEl) => {
+    const raw = ((formEl && formEl.querySelector('[name="contact"]')) || {}).value || '';
+    const v = raw.trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return { email: v.toLowerCase() };
+    if (!/^[\d\s()+-]+$/.test(v)) return null;   // @telegram username etc.
+    let d = v.replace(/\D/g, '');
+    if (d.length < 9 || d.length > 15) return null;
+    if (d.length === 10 && d.startsWith('0')) d = '38' + d;   // 0XXXXXXXXX → 380XXXXXXXXX
+    if (d.length === 9) d = '380' + d;
+    return { phone_number: '+' + d };
+  };
+
+  const track = (kind, method, formEl) => {
     if (!trackingOn) return;
+    const ud = kind === 'lead' && userData(formEl);
+    if (ud) gtag('set', 'user_data', ud);
     const label = kind === 'lead' ? T.leadLabel : T.callLabel;
     if (T.adsId && label) gtag('event', 'conversion', { send_to: `${T.adsId}/${label}` });
     gtag('event', kind === 'lead' ? 'generate_lead' : 'contact', { method });
@@ -407,7 +422,7 @@
     statusEl.classList.remove('is-error');
     statusEl.textContent = 'Надсилаємо…';
     const how = await sendLead(subject, lines, formEl);
-    if (how === 'sent') track('lead', method);
+    if (how === 'sent') track('lead', method, formEl);
     if (how === 'sent') statusEl.textContent = MSG_OK;
     else if (how === 'rate') statusEl.textContent = 'Ви вже надіслали кілька заявок — ми їх отримали й скоро зв’яжемося.';
     else { statusEl.classList.add('is-error'); statusEl.innerHTML = fallbackHtml(how.slice(5), subject, lines); }
