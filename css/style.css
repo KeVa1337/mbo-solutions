@@ -1002,7 +1002,16 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .case__title { font-size: 23px; }
   .case-next { flex-direction: column; align-items: flex-start; padding: 26px 22px; }
   .case-next .btn { width: 100%; }
-  .about__photo { margin: 0 14px; }
+  .about__photo { margin: 0 auto; max-width: 240px; }
+  .step { padding: 12px 18px; display: flex; align-items: center; gap: 14px; }
+  .step .step__num { font-size: 26px; margin: 0; }
+  .case .tags { display: none; }
+  .step h3 { margin-bottom: 0; }
+  .step p { display: none; }
+  .terms { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .terms li { flex-direction: column; gap: 8px; padding: 16px 14px; }
+  .terms b { font-size: 14.5px; }
+  .terms span { font-size: 12.5px; }
   .proof__points { justify-items: start; text-align: left; }
   .tools { grid-template-columns: 1fr; }
   .guarantee { flex-direction: column; align-items: flex-start; padding: 24px 22px; }
