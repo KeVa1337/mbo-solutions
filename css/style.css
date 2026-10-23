@@ -344,6 +344,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .hero__inner { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 56px; }
 .hero__title { font-size: clamp(38px, 5.4vw, 68px); font-weight: 800; }
 .hero__lead { margin-top: 24px; max-width: 520px; font-size: 18px; color: var(--muted); }
+.hero__lead b { color: var(--text); font-weight: 600; }
 .hero__actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 14px; }
 .js [data-split-intro] .w__i { --base: .15s; }
 
