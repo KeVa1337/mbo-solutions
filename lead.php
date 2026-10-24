@@ -71,6 +71,14 @@ if (isset($_GET['check'])) {
           'ip_used_for_limit' => mask_ip(client_ip()),
           'curl' => function_exists('curl_init'),
           'jarvis' => is_array($cfgC) && !empty($cfgC['jarvis_url']) && !empty($cfgC['jarvis_token']) ? 'налаштовано' : 'не налаштовано'];
+    if ($r['jarvis'] === 'налаштовано' && function_exists('curl_init')) {
+        $ch = curl_init(rtrim($cfgC['jarvis_url'], '/') . '/api/leads/ping');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5, CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_HTTPHEADER => ['X-Leads-Token: ' . $cfgC['jarvis_token']]]);
+        $body = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch); curl_close($ch);
+        $msg = json_decode((string) $body, true)['error'] ?? '';
+        $r['jarvis_check'] = $code === 200 ? 'ok' : ($code ? "помилка $code: $msg" : "немає з'єднання: $err");
+    }
     if ($r['config_valid']) {
         $api = 'https://api.telegram.org/bot' . $cfgC['token'];
         $me = tg($api . '/getMe');
