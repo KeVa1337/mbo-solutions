@@ -7,6 +7,9 @@
  *
  *   <?php return ['token' => '123456:ABC...', 'chats' => ['123456789']];
  *
+ * Optional copy of every lead to Jarvis (dashboard, stats):
+ *   'jarvis_url' => 'https://jarvis.mbo-solutions.com', 'jarvis_token' => '<LEADS_TOKEN from Coolify>'
+ *
  * Looked up in this order:
  *   1) ../mbo-telegram.php           (outside the web root — recommended)
  *   2) ./telegram-config.php         (next to this file; ignored by git, blocked by .htaccess)
@@ -66,7 +69,8 @@ if (isset($_GET['check'])) {
           'ip_x_real_ip' => mask_ip($_SERVER['HTTP_X_REAL_IP'] ?? ''),
           'ip_x_forwarded_for' => implode(', ', array_map('mask_ip', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))),
           'ip_used_for_limit' => mask_ip(client_ip()),
-          'curl' => function_exists('curl_init')];
+          'curl' => function_exists('curl_init'),
+          'jarvis' => is_array($cfgC) && !empty($cfgC['jarvis_url']) && !empty($cfgC['jarvis_token']) ? 'налаштовано' : 'не налаштовано'];
     if ($r['config_valid']) {
         $api = 'https://api.telegram.org/bot' . $cfgC['token'];
         $me = tg($api . '/getMe');
@@ -122,6 +126,16 @@ foreach ((array) $cfg['chats'] as $chat) {
     $res = tg($api, ['chat_id' => $chat, 'text' => $text, 'parse_mode' => 'HTML', 'disable_web_page_preview' => true]);
     if (!empty($res['ok'])) $sent++;
 }
+// Copy to Jarvis (lead history, daily stats). Optional: add 'jarvis_url' and 'jarvis_token' to the config file.
+// Never blocks or fails the visitor's request.
+if (!empty($cfg['jarvis_url']) && !empty($cfg['jarvis_token']) && function_exists('curl_init')) {
+    $ch = curl_init(rtrim($cfg['jarvis_url'], '/') . '/api/leads');
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 4, CURLOPT_CONNECTTIMEOUT => 3, CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode(['subject' => $subject, 'lines' => $lines, 'page' => mb_substr((string) ($in['page'] ?? ''), 0, 300)], JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'X-Leads-Token: ' . $cfg['jarvis_token']]]);
+    curl_exec($ch); curl_close($ch);
+}
+
 if ($sent) {
     $hits[] = $now;
     @file_put_contents($rlFile, json_encode($hits), LOCK_EX);
