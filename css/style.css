@@ -552,6 +552,14 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 @keyframes rotate { to { transform: rotate(360deg); } }
 .about__content > p:not(.eyebrow) { margin-top: 20px; color: var(--muted); font-size: 17px; }
 .about__content .section__title { margin-bottom: 8px; }
+/* First Fiverr review quote, shown above the Fiverr card */
+.fiverr-review { margin: 28px 0 0; max-width: 520px; padding: 18px 20px; border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(139, 92, 246, .08), transparent); border-radius: 0 var(--radius) var(--radius) 0; }
+.fiverr-review__stars { color: #ffb33e; font-size: 16px; letter-spacing: 2px; }
+.fiverr-review__stars span { margin-left: 6px; color: var(--muted); font-size: 13px; letter-spacing: 0; }
+.fiverr-review blockquote { margin: 10px 0 6px; font-size: 16px; line-height: 1.5; color: var(--text); }
+.fiverr-review__tr { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.fiverr-review figcaption { margin-top: 10px; font-size: 13px; color: var(--accent-light); }
+.fiverr-review + .fiverr-card { margin-top: 14px; }
 /* Fiverr profile card in the About section: Fiverr green only on the wordmark */
 .fiverr-card { margin-top: 28px; display: flex; align-items: center; gap: 18px; max-width: 520px; padding: 16px 20px; border-radius: 18px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, .03); transition: border-color .3s, background .3s, transform .4s var(--ease); }
 .fiverr-card:hover { border-color: #1dbf73; background: rgba(29, 191, 115, .08); }
