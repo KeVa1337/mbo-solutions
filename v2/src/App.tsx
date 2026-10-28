@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Header, Hero } from "./sections/Top";
-import { Process, Stats, Work } from "./sections/Middle";
+import { Stats, Work } from "./sections/Middle";
 import { Contact, Faq, Footer, MobileBar, Pricing, Proof } from "./sections/Bottom";
 import type { ProjectType } from "./data";
 
@@ -20,7 +20,6 @@ export default function App() {
         <Hero onConcept={concept} />
         <Stats />
         <Work />
-        <Process />
         <Pricing onPick={pick} />
         <Proof onConcept={concept} />
         <Faq />
