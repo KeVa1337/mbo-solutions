@@ -373,7 +373,7 @@
     gtag('event', kind === 'lead' ? 'generate_lead' : 'contact', { method });
   };
 
-  // Calls, Viber, Telegram, email, Instagram clicks
+  // Calls, Viber, Telegram, email, Instagram and Fiverr clicks
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
     if (!a) return;
@@ -382,7 +382,8 @@
       : href.startsWith('viber:') ? 'viber'
       : href.includes('t.me/') ? 'telegram'
       : href.startsWith('mailto:') ? 'email'
-      : href.includes('instagram.com') ? 'instagram' : '';
+      : href.includes('instagram.com') ? 'instagram'
+      : href.includes('fiverr.com') ? 'fiverr' : '';
     if (method) track('contact', method);
   });
 
