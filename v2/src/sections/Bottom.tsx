@@ -71,7 +71,7 @@ export function Proof({ onConcept }: { onConcept: () => void }) {
           <p className="text-sm font-semibold">Для перших клієнтів</p>
           <div>
             <p className="text-[64px] leading-none font-light tracking-[-.05em]">−15%</p>
-            <p className="mt-3 text-[15px] opacity-80">в обмін на чесний відгук і дозвіл показати сайт у наших роботах</p>
+            <p className="mt-3 text-[15px] opacity-95">в обмін на чесний відгук і дозвіл показати сайт у наших роботах</p>
           </div>
         </div>
       </Reveal>
@@ -227,9 +227,9 @@ export function Contact({ type, setType }: { type: ProjectType; setType: (t: Pro
 
 export function Footer() {
   return (
-    <footer className="wrap flex flex-col items-start justify-between gap-6 border-t border-line py-10 text-sm text-fg-3 md:flex-row md:items-center">
+    <footer className="wrap flex flex-col items-start justify-between gap-6 border-t border-line pt-10 pb-28 text-sm text-fg-3 md:flex-row md:items-center md:pb-10">
       <Logo className="h-5 w-auto text-fg" />
-      <nav aria-label="Корисне" className="flex flex-wrap gap-x-6 gap-y-2">
+      <nav aria-label="Корисне" className="flex flex-wrap gap-x-6 [&>a]:inline-flex [&>a]:min-h-11 [&>a]:items-center">
         <a href="/calculator.html" className="hover:text-fg">Калькулятор вартості</a>
         <a href="/audit.html" className="hover:text-fg">Безкоштовний аудит</a>
         <a href="/guides/" className="hover:text-fg">Гайди</a>
@@ -244,7 +244,14 @@ export function Footer() {
 export function MobileBar() {
   const { scrollY } = useScroll();
   const [show, setShow] = useState(false);
-  useMotionValueEvent(scrollY, "change", (v) => setShow(v > 600));
+  useMotionValueEvent(scrollY, "change", (v) => {
+    const contact = document.getElementById("contact");
+    const nearForm = !!contact && contact.getBoundingClientRect().top < innerHeight * 0.85;
+    // the pinned "how we work" block keeps its step text at the bottom of the screen
+    const steps = document.getElementById("process")?.getBoundingClientRect();
+    const pinned = !!steps && steps.top <= 0 && steps.bottom >= innerHeight;
+    setShow(v > 600 && !nearForm && !pinned);
+  });
   return (
     <AnimatePresence>
       {show && (

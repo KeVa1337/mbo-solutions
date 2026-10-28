@@ -51,7 +51,7 @@ export function Process() {
               {steps.map((s, i) => (
                 <li key={s.title} className="relative py-3 pl-8">
                   <span className={`absolute top-[18px] left-0 size-2.5 rounded-full transition-colors duration-500 ${i <= stage ? "bg-accent" : "bg-[var(--t-line-2)]"}`} />
-                  <motion.p animate={{ opacity: i === stage ? 1 : 0.35 }} className="text-xl font-semibold">{s.title}</motion.p>
+                  <motion.p animate={{ opacity: i === stage ? 1 : 0.6 }} className="text-xl font-semibold">{s.title}</motion.p>
                   <AnimatePresence initial={false}>
                     {i === stage && (
                       <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-1.5 text-fg-2">
@@ -140,7 +140,7 @@ export function Work() {
       <div ref={ref} className="mt-16 overflow-hidden">
         <div className="wrap mb-5 flex items-end justify-between">
           <p className="text-lg font-semibold">Готові демо для вашої ніші</p>
-          <a href="/examples/" className="text-sm text-fg-2 hover:text-fg">Усі приклади →</a>
+          <a href="/examples/" className="inline-flex min-h-11 items-center text-sm text-fg-2 hover:text-fg">Усі приклади →</a>
         </div>
         <motion.div style={{ x }} className="flex gap-4 pl-[max(16px,calc((100vw-1200px)/2))]">
           {niches.map((n) => (

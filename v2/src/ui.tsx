@@ -34,7 +34,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     });
   };
   return (
-    <button type="button" onClick={flip} aria-label={light ? "Темна тема" : "Світла тема"} className={`flex size-10 cursor-pointer items-center justify-center rounded-full border border-line-2 transition-colors hover:bg-card-2 ${className}`}>
+    <button type="button" onClick={flip} aria-label={light ? "Темна тема" : "Світла тема"} className={`flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-line-2 transition-colors hover:bg-card-2 ${className}`}>
       <motion.span key={String(light)} initial={{ rotate: -90, scale: 0.5, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
         {light ? <Moon className="size-[18px]" aria-hidden /> : <Sun className="size-[18px]" aria-hidden />}
       </motion.span>

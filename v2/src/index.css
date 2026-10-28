@@ -5,7 +5,7 @@
 
 /* Theme tokens: dark ink by default, light paper with data-theme="light" */
 :root {
-  --t-bg: #0c0c0f; --t-bg-2: #121216; --t-fg: #f3f2f6; --t-fg-2: #a3a1ad; --t-fg-3: #6f6d79;
+  --t-bg: #0c0c0f; --t-bg-2: #121216; --t-fg: #f3f2f6; --t-fg-2: #a3a1ad; --t-fg-3: #9a98a5;
   --t-line: rgb(255 255 255 / .08); --t-line-2: rgb(255 255 255 / .14);
   --t-card: rgb(255 255 255 / .035); --t-card-2: rgb(255 255 255 / .06);
   --t-ink: #050507; --t-on-ink: #f3f2f6;
@@ -13,7 +13,7 @@
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --t-bg: #f3f2ef; --t-bg-2: #eae8e3; --t-fg: #131217; --t-fg-2: #5d5b66; --t-fg-3: #8d8b95;
+  --t-bg: #f3f2ef; --t-bg-2: #eae8e3; --t-fg: #131217; --t-fg-2: #5d5b66; --t-fg-3: #5f5d68;
   --t-line: rgb(0 0 0 / .08); --t-line-2: rgb(0 0 0 / .14);
   --t-card: rgb(255 255 255 / .6); --t-card-2: rgb(255 255 255 / .9);
   --t-ink: #131217; --t-on-ink: #f3f2ef;

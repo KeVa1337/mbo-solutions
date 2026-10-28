@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Send, Zap } from "lucide-react";
 
@@ -30,9 +31,18 @@ export default function BuildDemo({ stage }: { stage: number }) {
   const on = stage >= 2;
   const phone = stage >= 3;
   const live = stage >= 4;
+  // on phones the demo is square and the phone frame wider, so overlays don't cover the page
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = matchMedia("(max-width: 640px)");
+    const on = () => setNarrow(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
 
   return (
-    <div className="relative flex aspect-[5/4] w-full items-center justify-center">
+    <div className="relative flex aspect-square w-full items-center justify-center sm:aspect-[5/4]">
       {/* stage label */}
       <div className="absolute top-0 left-0 z-20 flex items-center gap-2">
         <AnimatePresence mode="popLayout" initial={false}>
@@ -52,7 +62,7 @@ export default function BuildDemo({ stage }: { stage: number }) {
         className="@container relative overflow-hidden border border-line-2 shadow-[0_40px_120px_-40px_var(--t-glow)]"
         initial={false}
         animate={{
-          width: phone ? "44%" : "100%",
+          width: phone ? (narrow ? "62%" : "44%") : "100%",
           height: phone ? "92%" : "80%",
           borderRadius: phone ? 34 : 20,
           backgroundColor: on ? "#0e0e11" : "var(--t-bg-2)",
@@ -165,7 +175,7 @@ export default function BuildDemo({ stage }: { stage: number }) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: 0.5 }}
-            style={{ background: "color-mix(in srgb, var(--t-bg-2) 92%, transparent)" }} className="glass absolute bottom-[14%] left-[2%] z-10 flex items-center gap-2.5 rounded-2xl px-3.5 py-2.5"
+            style={{ background: "color-mix(in srgb, var(--t-bg-2) 92%, transparent)" }} className="glass absolute bottom-[3%] left-0 z-10 flex items-center gap-2 rounded-2xl px-2.5 py-2 sm:bottom-[14%] sm:left-[2%] sm:gap-2.5 sm:px-3.5 sm:py-2.5"
           >
             <span className="flex size-8 items-center justify-center rounded-xl bg-accent text-on-accent"><Zap className="size-4" aria-hidden /></span>
             <span className="flex flex-col leading-tight">

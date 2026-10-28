@@ -24,13 +24,13 @@ export function Header() {
           WebkitBackdropFilter: stuck ? "blur(18px)" : "none",
         }}
       >
-        <a href="#top" className="mr-auto flex items-center gap-2.5" aria-label="MBO Solutions, на початок">
+        <a href="#top" className="mr-auto flex min-h-11 items-center gap-2.5" aria-label="MBO Solutions, на початок">
           <Logo className="h-5 w-auto" />
           <span className="hidden text-[11px] font-semibold tracking-[.3em] text-fg-3 uppercase sm:inline">Solutions</span>
         </a>
-        <nav aria-label="Розділи" className="hidden items-center gap-1 md:flex">
+        <nav aria-label="Розділи" className="hidden items-center gap-1 lg:flex">
           {links.map(([h, l]) => (
-            <a key={h} href={h} className="rounded-full px-3.5 py-2 text-sm text-fg-2 transition-colors hover:bg-card-2 hover:text-fg">{l}</a>
+            <a key={h} href={h} className="inline-flex min-h-10 items-center rounded-full px-3.5 text-sm text-fg-2 transition-colors hover:bg-card-2 hover:text-fg">{l}</a>
           ))}
         </nav>
         <ThemeToggle />
@@ -110,7 +110,7 @@ export function Hero({ onConcept }: { onConcept: () => void }) {
             <a href="#contact" className={btnAccent}>Обговорити проєкт<ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden /></a>
             <button type="button" onClick={onConcept} className={btnGhost}><Gift className="size-4 text-accent" aria-hidden />Концепт безкоштовно</button>
           </motion.div>
-          <a href={TG} target="_blank" rel="noopener" className="mt-5 inline-flex items-center gap-1.5 text-sm text-fg-2 hover:text-fg">
+          <a href={TG} target="_blank" rel="noopener" className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-fg-2 hover:text-fg">
             <Send className="size-3.5" aria-hidden />Або просто напишіть нам у Telegram<ArrowUpRight className="size-3.5" aria-hidden />
           </a>
         </div>
@@ -118,11 +118,14 @@ export function Hero({ onConcept }: { onConcept: () => void }) {
         <motion.div style={{ y: demoY }} initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.2 }}>
           <BuildDemo stage={stage} />
           {/* tappable progress: jump to any stage */}
-          <div className="mt-4 flex gap-1.5" role="tablist" aria-label="Етапи створення сайту">
+          <div className="mt-1 flex gap-1.5" role="tablist" aria-label="Етапи створення сайту">
             {[0, 1, 2, 3, 4].map((i) => (
-              <button key={i} type="button" role="tab" aria-selected={stage === i} aria-label={`Етап ${i + 1}`} onClick={() => setStage(i)} className="relative h-1 flex-1 cursor-pointer overflow-hidden rounded-full bg-[var(--t-line-2)]">
-                {stage === i && <motion.span layoutId="hero-step" className="absolute inset-0 rounded-full bg-accent" />}
-                {stage > i && <span className="absolute inset-0 rounded-full bg-fg-3" />}
+              // the bar is thin, the button around it is a full-size tap target
+              <button key={i} type="button" role="tab" aria-selected={stage === i} aria-label={`Етап ${i + 1}`} onClick={() => setStage(i)} className="flex h-11 flex-1 cursor-pointer items-center">
+                <span className="relative h-1 w-full overflow-hidden rounded-full bg-[var(--t-line-2)]">
+                  {stage === i && <motion.span layoutId="hero-step" className="absolute inset-0 rounded-full bg-accent" />}
+                  {stage > i && <span className="absolute inset-0 rounded-full bg-fg-3" />}
+                </span>
               </button>
             ))}
           </div>
