@@ -2,7 +2,8 @@
 import re, os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-IDX = open(os.path.join(ROOT, 'index.html')).read()
+# the home page is now a React build, so the shared header/footer come from a saved copy of the old one
+IDX = open(os.path.join(ROOT, 'tools', 'pages', 'legacy-index.html')).read()
 
 CSS_V = re.search(r'style\.css\?v=(\d+)', IDX).group(1)
 JS_V = re.search(r'main\.js\?v=(\d+)', IDX).group(1)

@@ -14,7 +14,8 @@ export function Logo({ className = "" }: { className?: string }) {
 
 // Theme switch with a circular reveal from the button (View Transitions where supported)
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [light, setLight] = useState(() => document.documentElement.dataset.theme === "light");
+  const [light, setLight] = useState(false);
+  useEffect(() => setLight(document.documentElement.dataset.theme === "light"), []);
   const flip = (e: React.MouseEvent) => {
     const next = !light;
     const apply = () => {
@@ -88,7 +89,7 @@ export function CountUp({ to, decimals = 0, className = "" }: { to: number; deci
     return () => c.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seen]);
-  return <span ref={ref} className={className}>{fmt(reduce ? to : 0)}</span>;
+  return <span ref={ref} className={className}>{fmt(0)}</span>;
 }
 
 export const btnAccent = "group inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 font-semibold text-on-accent shadow-[0_12px_40px_-12px_var(--t-glow)] transition-transform active:scale-[.97]";

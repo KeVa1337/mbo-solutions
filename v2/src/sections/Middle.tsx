@@ -86,13 +86,13 @@ export function Process() {
 }
 
 const cases = [
-  { tag: "Брендинг · сайт", name: "LUMEX", title: "Картини на оргсклі з підсвіткою фар вашого авто", img: "/img/case-lumex.webp", href: "" },
-  { tag: "Концепт для ніші", name: "GLOSSLAB", title: "Сайт детейлінг-студії, який записує клієнтів сам", img: "/img/demo-detailing.webp", href: "/examples/detailing.html" },
+  { tag: "Брендинг · сайт", name: "LUMEX", title: "Картини на оргсклі з підсвіткою фар вашого авто", img: "/assets/img/case-lumex.webp", href: "" },
+  { tag: "Концепт для ніші", name: "GLOSSLAB", title: "Сайт детейлінг-студії, який записує клієнтів сам", img: "/assets/img/demo-detailing.webp", href: "/examples/detailing.html" },
 ];
 const niches = [
-  { name: "СТО", img: "/img/demo-sto.webp", href: "/examples/sto.html" },
-  { name: "Салон краси", img: "/img/demo-beauty.webp", href: "/examples/beauty.html" },
-  { name: "Шиномонтаж", img: "/img/demo-tires.webp", href: "/examples/tires.html" },
+  { name: "СТО", img: "/assets/img/demo-sto.webp", href: "/examples/sto.html" },
+  { name: "Салон краси", img: "/assets/img/demo-beauty.webp", href: "/examples/beauty.html" },
+  { name: "Шиномонтаж", img: "/assets/img/demo-tires.webp", href: "/examples/tires.html" },
 ];
 
 // Card that tilts toward the pointer
@@ -127,7 +127,8 @@ export function Work() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const x = useTransform(scrollYProgress, [0, 1], ["6%", "-12%"]);
   return (
-    <section id="work" className="py-28 md:py-36">
+    <section id="work" className="relative py-28 md:py-36">
+      <span id="cases" className="absolute top-0" aria-hidden="true" />
       <div className="wrap">
         <p className="eyebrow">Роботи</p>
         <SplitTitle text="Те, що ми вже зробили" className="h2 mt-4" />

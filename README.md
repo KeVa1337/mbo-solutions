@@ -1,11 +1,25 @@
 # MBO Solutions — сайт-портфоліо
 
-Статичний односторінковий сайт студії **MBO Solutions** (mbo-solutions.com). Без збірки та залежностей: HTML + CSS + JS.
+Сайт студії **MBO Solutions** (mbo-solutions.com).
+
+Головна сторінка зібрана з `v2/` (React + TypeScript + Tailwind + Motion) і заздалегідь відрендерена в `index.html`, тож текст бачать і пошуковики. Підсторінки, як і раніше, — статичний HTML + CSS + JS.
+
+### Як змінити головну
+
+```bash
+cd v2
+npm install
+npm run dev      # локально: http://localhost:5173
+npm run deploy   # збирає й кладе index.html та assets/v2/ у корінь сайту
+```
+
+Після `npm run deploy` закомітьте й запуште зміни: хостинг публікує корінь репозиторію. Тексти й ціни — у `v2/src/data.ts`, секції — у `v2/src/sections/`. Аналітика читає ID з `js/config.js`.
 
 ## Структура
 
 ```
-index.html            — головна (Hero, Послуги, Кейси, Ціни, Корисне, Квіз, Про нас, FAQ, Контакти)
+index.html            — головна, збирається з v2/ (не редагувати вручну)
+v2/                   — код головної на React
 calculator.html       — калькулятор вартості й окупності (ціни — у js/calculator.js, блок TYPES/OPTIONS)
 audit.html            — безкоштовний експрес-аудит
 examples/             — «Сайт для вашого бізнесу»: index + демо detailing / sto / beauty / tires (noindex)
@@ -20,7 +34,7 @@ assets/               — зображення, шрифти, іконка
 
 ### Як змінювати підсторінки
 
-Шапка, логотип і футер підсторінок копіюються з `index.html`. Тексти — у `tools/pages/gen_*.py`. Після змін:
+Шапка, логотип і футер підсторінок копіюються з `tools/pages/legacy-index.html` (копія попередньої головної). Тексти — у `tools/pages/gen_*.py`. Після змін:
 
 ```bash
 python3 tools/pages/build.py

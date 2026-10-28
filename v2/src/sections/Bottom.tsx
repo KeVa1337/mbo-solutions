@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/
 import { ArrowRight, Check, Clock, Camera, Gift, Loader2, Mail, Phone, Plus, Send, ShieldCheck, Star } from "lucide-react";
 import { CountUp, Logo, Reveal, SplitTitle, btnAccent } from "../ui";
 import { FIVERR, PHONE, TG, faq, guarantees, plans, types, type ProjectType } from "../data";
+import { sourceLines, track } from "../track";
 
 export function Pricing({ onPick }: { onPick: (t: ProjectType) => void }) {
   return (
@@ -49,7 +50,8 @@ export function Pricing({ onPick }: { onPick: (t: ProjectType) => void }) {
 // Bento: real review, first-client discount, free concept, founder
 export function Proof({ onConcept }: { onConcept: () => void }) {
   return (
-    <section aria-label="Відгуки та пропозиції" className="wrap grid gap-4 pb-28 md:grid-cols-6 md:pb-36">
+    <section id="about" aria-label="Відгуки та пропозиції" className="wrap relative grid gap-4 pb-28 md:grid-cols-6 md:pb-36">
+      <span id="gift" className="absolute top-0" aria-hidden="true" />
       <Reveal className="md:col-span-4">
         <a href={FIVERR} target="_blank" rel="noopener" className="group flex h-full flex-col justify-between gap-8 rounded-[32px] border border-line bg-card p-7 md:p-9">
           <div className="flex items-center justify-between">
@@ -85,7 +87,7 @@ export function Proof({ onConcept }: { onConcept: () => void }) {
       </Reveal>
       <Reveal delay={0.1} className="md:col-span-3">
         <div className="flex h-full items-center gap-5 rounded-[32px] border border-line bg-card p-5">
-          <img src="/img/founder.webp" alt="Богдан Мудрик" loading="lazy" className="size-20 shrink-0 rounded-2xl object-cover object-top" />
+          <img src="/assets/img/founder.webp" alt="Богдан Мудрик" loading="lazy" className="size-20 shrink-0 rounded-2xl object-cover object-top" />
           <div>
             <p className="text-lg font-semibold">Богдан Мудрик</p>
             <p className="mt-1 text-fg-2">Засновник. Працюєте напряму зі мною, без менеджерів-посередників.</p>
@@ -144,16 +146,20 @@ export function Contact({ type, setType }: { type: ProjectType; setType: (t: Pro
     const lines = [`Що потрібно: ${type}`, `Ім’я: ${f.get("name")}`, `Контакт: ${f.get("contact")}`];
     const msg = String(f.get("msg") || "").trim();
     if (msg) lines.push(`\nПро проєкт:\n${msg}`);
+    lines.push(...sourceLines());
     try {
       const r = await fetch("/lead.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: `Заявка з сайту: ${type}`, lines, page: location.pathname, website: f.get("website") }) });
       const j = await r.json().catch(() => ({}));
-      setStatus(r.ok && j.ok ? "sent" : "error");
+      const ok = r.ok && j.ok;
+      setStatus(ok ? "sent" : "error");
+      if (ok) track("lead", "form", String(f.get("contact") || ""));
     } catch { setStatus("error"); }
   };
   const field = "min-h-13 w-full rounded-2xl border border-line-2 bg-card px-4 text-base outline-none transition-colors placeholder:text-fg-3 focus:border-accent";
 
   return (
-    <section id="contact" className="wrap pb-28 md:pb-36">
+    <section id="contact" className="wrap relative pb-28 md:pb-36">
+      <span id="quiz" className="absolute top-0" aria-hidden="true" />
       <div className="relative grid gap-10 overflow-hidden rounded-[40px] border border-line bg-bg-2 p-6 md:p-12 lg:grid-cols-[1fr_1.2fr]">
         <span aria-hidden className="pointer-events-none absolute -top-40 -left-40 size-[500px] rounded-full opacity-50 blur-[120px]" style={{ background: "var(--t-glow)" }} />
         <div className="relative">
