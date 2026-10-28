@@ -13,13 +13,17 @@
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --t-bg: #f3f2ef; --t-bg-2: #eae8e3; --t-fg: #131217; --t-fg-2: #5d5b66; --t-fg-3: #5f5d68;
-  --t-line: rgb(0 0 0 / .08); --t-line-2: rgb(0 0 0 / .14);
-  --t-card: rgb(255 255 255 / .6); --t-card-2: rgb(255 255 255 / .9);
-  --t-ink: #131217; --t-on-ink: #f3f2ef;
-  --t-accent: #6a55e0; --t-on-accent: #ffffff; --t-glow: rgb(106 85 224 / .22);
+  /* cool lavender-white paper, white cards, deep indigo instead of black, one violet accent */
+  --t-bg: #f5f4fa; --t-bg-2: #ecebf5; --t-fg: #17152a; --t-fg-2: #4f4c66; --t-fg-3: #615e7a;
+  --t-line: rgb(60 48 140 / .09); --t-line-2: rgb(60 48 140 / .16);
+  --t-card: #ffffff; --t-card-2: #f8f7fd;
+  --t-ink: #1c1838; --t-on-ink: #f4f2ff;
+  --t-accent: #6b58e3; --t-on-accent: #ffffff; --t-glow: rgb(124 104 238 / .2);
   color-scheme: light;
 }
+/* light theme: white cards float on the paper with a soft violet-tinted shadow */
+:root[data-theme="light"] .bg-card { box-shadow: 0 1px 2px rgb(40 30 100 / .04), 0 12px 32px -16px rgb(60 48 140 / .18); }
+:root[data-theme="light"] .bg-ink { box-shadow: 0 20px 50px -24px rgb(28 24 56 / .55); }
 
 @theme inline {
   --font-sans: "Manrope", system-ui, sans-serif;
