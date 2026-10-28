@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
 
 export function Logo({ className = "" }: { className?: string }) {
@@ -12,14 +12,31 @@ export function Logo({ className = "" }: { className?: string }) {
   );
 }
 
-// Theme switch with a circular reveal from the button (View Transitions where supported)
+// Theme switch with a circular reveal from the button (View Transitions where supported).
+// First-time visitors get a one-off hint that a dark theme exists.
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [light, setLight] = useState(false);
-  useEffect(() => setLight(document.documentElement.dataset.theme === "light"), []);
+  const [light, setLight] = useState(true);
+  const [hint, setHint] = useState(false);
+  useEffect(() => {
+    setLight(document.documentElement.dataset.theme !== "dark");
+    let seen = true;
+    try { seen = !!(localStorage.getItem("mbo-theme") || localStorage.getItem("mbo-theme-hint")); } catch { /* private mode: skip the hint */ }
+    if (seen) return;
+    const show = setTimeout(() => setHint(true), 1400);
+    const hide = setTimeout(() => dismiss(), 9000);
+    return () => { clearTimeout(show); clearTimeout(hide); };
+  }, []);
+  const dismiss = () => {
+    setHint(false);
+    try { localStorage.setItem("mbo-theme-hint", "1"); } catch { /* private mode */ }
+  };
+
   const flip = (e: React.MouseEvent) => {
+    dismiss();
     const next = !light;
     const apply = () => {
       document.documentElement.dataset.theme = next ? "light" : "dark";
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next ? "#f5f4fa" : "#0c0c0f");
       try { localStorage.setItem("mbo-theme", next ? "light" : "dark"); } catch { /* private mode */ }
       setLight(next);
     };
@@ -33,12 +50,37 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       );
     });
   };
+
   return (
-    <button type="button" onClick={flip} aria-label={light ? "Темна тема" : "Світла тема"} className={`flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-line-2 transition-colors hover:bg-card-2 ${className}`}>
-      <motion.span key={String(light)} initial={{ rotate: -90, scale: 0.5, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
-        {light ? <Moon className="size-[18px]" aria-hidden /> : <Sun className="size-[18px]" aria-hidden />}
-      </motion.span>
-    </button>
+    <div className="relative shrink-0">
+      <button type="button" onClick={flip} aria-label={light ? "Увімкнути темну тему" : "Увімкнути світлу тему"} className={`relative flex size-10 cursor-pointer items-center justify-center rounded-full border border-line-2 transition-colors hover:bg-card-2 ${className}`}>
+        {hint && <motion.span aria-hidden className="absolute inset-0 rounded-full border-2 border-accent" animate={{ scale: [1, 1.7], opacity: [0.9, 0] }} transition={{ duration: 1.4, repeat: Infinity }} />}
+        <motion.span key={String(light)} initial={{ rotate: -90, scale: 0.5, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
+          {light ? <Moon className="size-[18px]" aria-hidden /> : <Sun className="size-[18px]" aria-hidden />}
+        </motion.span>
+      </button>
+      <AnimatePresence>
+        {hint && (
+          <motion.div
+            role="status"
+            initial={{ opacity: 0, y: -8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28 }}
+            className="fixed inset-x-4 top-[72px] z-50 origin-top rounded-2xl bg-ink p-4 text-on-ink shadow-2xl sm:absolute sm:inset-x-auto sm:top-full sm:right-0 sm:mt-3 sm:w-[280px] sm:origin-top-right"
+          >
+            {/* on phones the hint spans the screen under the header; from sm up it hangs from the toggle with an arrow */}
+            <span aria-hidden className="absolute -top-1.5 right-[14px] hidden size-3 rotate-45 bg-ink sm:block" />
+            <p className="flex items-center gap-2 text-[15px] font-semibold"><Moon className="size-4" aria-hidden />Є темна тема</p>
+            <p className="mt-1 text-sm text-on-ink/70">Сайт можна перемкнути на темний вигляд цією кнопкою.</p>
+            <div className="mt-3 flex gap-2">
+              <button type="button" onClick={flip} className="min-h-10 flex-1 cursor-pointer rounded-full bg-accent px-3 text-sm font-semibold text-on-accent">Спробувати</button>
+              <button type="button" onClick={dismiss} className="min-h-10 cursor-pointer rounded-full px-3 text-sm text-on-ink/70 hover:text-on-ink">Зрозуміло</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 

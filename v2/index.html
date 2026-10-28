@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Розробка сайтів під ключ від 3 000 грн — лендінг за 2–3 дні | MBO Solutions</title>
     <meta name="description" content="Створюємо сайти, які приводять клієнтів: лендінг від 3 000 грн за 2–3 дні, корпоративний сайт від 8 000 грн, інтернет-магазин від 15 000 грн. Заявки одразу в Telegram, безкоштовні правки." />
-    <meta name="theme-color" content="#0c0c0f" />
+    <meta name="theme-color" content="#f5f4fa" />
     <link rel="canonical" href="https://mbo-solutions.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="uk_UA" />
@@ -28,7 +28,10 @@
     </script>
     <script>
       // apply the saved theme before paint so there is no flash
-      try { const t = localStorage.getItem("mbo-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+      // light by default; a saved choice wins
+      var t = "light";
+      try { t = localStorage.getItem("mbo-theme") || "light"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
     </script>
   </head>
   <body>
