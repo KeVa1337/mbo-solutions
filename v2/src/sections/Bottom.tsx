@@ -247,10 +247,7 @@ export function MobileBar() {
   useMotionValueEvent(scrollY, "change", (v) => {
     const contact = document.getElementById("contact");
     const nearForm = !!contact && contact.getBoundingClientRect().top < innerHeight * 0.85;
-    // the pinned "how we work" block keeps its step text at the bottom of the screen
-    const steps = document.getElementById("process")?.getBoundingClientRect();
-    const pinned = !!steps && steps.top <= 0 && steps.bottom >= innerHeight;
-    setShow(v > 600 && !nearForm && !pinned);
+    setShow(v > 600 && !nearForm);
   });
   return (
     <AnimatePresence>

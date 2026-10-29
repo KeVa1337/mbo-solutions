@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import BuildDemo from "../BuildDemo";
 import { CountUp, Reveal, SplitTitle } from "../ui";
@@ -32,53 +32,42 @@ export function Stats() {
   );
 }
 
-// Scroll-driven story: the same site builds up step by step while the section is pinned
+// How we work: a normal section; the demo plays the five steps on its own while it is on screen
 export function Process() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const inView = useInView(ref, { amount: 0.35 });
   const [stage, setStage] = useState(0);
-  useMotionValueEvent(scrollYProgress, "change", (p) => setStage(Math.min(4, Math.floor(p * 5.2))));
-  const bar = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+  useEffect(() => {
+    if (!inView) return;
+    const t = setTimeout(() => setStage((s) => (s + 1) % 5), stage === 4 ? 3800 : 2600);
+    return () => clearTimeout(t);
+  }, [stage, inView]);
 
   return (
-    <section id="process" ref={ref} className="relative h-[460vh]" aria-label="Як ми працюємо">
-      <div className="sticky top-0 flex min-h-svh flex-col justify-center overflow-hidden py-20">
-        <div className="wrap grid items-center gap-8 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
-          <div>
-            <p className="eyebrow">Як ми працюємо</p>
-            <h2 className="h2 mt-4">Ваш сайт за 5 кроків</h2>
-            <ol className="mt-8 hidden flex-col gap-1 lg:flex">
-              {steps.map((s, i) => (
-                <li key={s.title} className="relative py-3 pl-8">
-                  <span className={`absolute top-[18px] left-0 size-2.5 rounded-full transition-colors duration-500 ${i <= stage ? "bg-accent" : "bg-[var(--t-line-2)]"}`} />
-                  <motion.p animate={{ opacity: i === stage ? 1 : 0.6 }} className="text-xl font-semibold">{s.title}</motion.p>
-                  <AnimatePresence initial={false}>
-                    {i === stage && (
-                      <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-1.5 text-fg-2">
-                        {s.text}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </li>
-              ))}
-            </ol>
-            <div className="relative mt-6 hidden h-px bg-[var(--t-line-2)] lg:block">
-              <motion.span className="absolute inset-y-0 left-0 origin-left bg-accent" style={{ width: "100%", scaleX: bar }} />
-            </div>
-          </div>
-
-          <div className="mx-auto w-full max-w-[620px]">
-            <BuildDemo stage={stage} />
-            {/* phones: the current step text sits under the demo */}
-            <div className="mt-5 min-h-[96px] lg:hidden">
-              <AnimatePresence mode="wait">
-                <motion.div key={stage} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                  <p className="text-lg font-semibold">{steps[stage].title}</p>
-                  <p className="mt-1 text-fg-2">{steps[stage].text}</p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
+    <section id="process" ref={ref} className="py-28 md:py-36" aria-label="Як ми працюємо">
+      {/* phones: heading, demo, steps; desktop: heading and steps on the left, demo on the right */}
+      <div className="wrap grid gap-8 lg:grid-cols-[1fr_1.15fr] lg:gap-x-16 lg:gap-y-0">
+        <div className="lg:col-start-1 lg:row-start-1">
+          <p className="eyebrow">Як ми працюємо</p>
+          <SplitTitle text="Ваш сайт за 5 кроків" className="h2 mt-4" />
+        </div>
+        <Reveal className="mx-auto w-full max-w-[620px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+          <BuildDemo stage={stage} />
+        </Reveal>
+        <div className="lg:col-start-1 lg:row-start-2">
+          <ol className="flex flex-col gap-1 lg:mt-8">
+            {steps.map((s, i) => (
+              <li key={s.title}>
+                {/* each step is a button: tap it to show that stage in the demo */}
+                <button type="button" onClick={() => setStage(i)} aria-current={i === stage ? "step" : undefined} className="relative w-full cursor-pointer rounded-2xl py-3 pr-3 pl-10 text-left transition-colors hover:bg-card-2">
+                  {i === stage && <motion.span layoutId="step-bg" className="absolute inset-0 rounded-2xl border border-line bg-card" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
+                  <span className={`absolute top-[22px] left-4 size-2.5 rounded-full transition-colors duration-500 ${i <= stage ? "bg-accent" : "bg-[var(--t-line-2)]"}`} />
+                  <span className="relative block text-lg font-semibold">{s.title}</span>
+                  <span className="relative mt-1 block text-[15px] leading-relaxed text-fg-2">{s.text}</span>
+                </button>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
